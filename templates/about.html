@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Waikru AI Muay Thai Coach</title>
+  <meta name="description" content="Waikru is an AI coaching tool built for Muay Thai practitioners who want honest, specific technique feedback between sessions.">
+  <link rel="canonical" href="https://waikru.app/about">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --bg-white: #ffffff;
+      --text: #19202a;
+      --text-strong: #141a20;
+      --text-muted: #3d4751;
+      --text-dim: #74808c;
+      --border: #dfe4ea;
+      --border-strong: #d1d9e1;
+      --accent: #e8432d;
+      --accent-hover: #d63a25;
+    }
+    [data-theme="dark"] {
+      --bg: #0d0d0d;
+      --bg-white: #1a1a1a;
+      --text: #f0f0f0;
+      --text-strong: #ffffff;
+      --text-muted: #b5bfc8;
+      --text-dim: #8a96a3;
+      --border: #2a2a2a;
+      --border-strong: #3a3a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.2s, color 0.2s;
+    }
+    nav {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      min-height: 48px;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+    }
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 20px;
+      min-height: 48px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-pill:hover { background: var(--accent-hover); }
+    .btn-pill-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 18px;
+      min-height: 48px;
+      background: transparent;
+      color: var(--text-strong);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-pill-outline:hover { border-color: var(--accent); color: var(--accent); }
+    main {
+      max-width: 720px;
+      margin: 64px auto;
+      padding: 0 32px;
+    }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.08;
+      color: var(--text-strong);
+      margin-bottom: 32px;
+    }
+    .body-text p {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+    .body-text p:last-child { margin-bottom: 0; }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .stat {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-strong);
+      letter-spacing: -1px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+    .cta-block {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      text-align: center;
+      margin-top: 48px;
+    }
+    .cta-block h2 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+      margin-bottom: 10px;
+    }
+    .cta-block p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 13px;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
+    footer a { color: var(--text-dim); text-decoration: none; margin: 0 10px; }
+    footer a:hover { color: var(--text-strong); }
+    @media (max-width: 600px) {
+      main { margin: 40px auto; padding: 0 20px; }
+      .stat-grid { grid-template-columns: 1fr; }
+      .cta-block { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">wai<span>kru</span></a>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">🌙</span></button>
+      <a href="/login" class="btn-pill-outline">Log in</a>
+      <a href="/" class="btn-pill">Try it free</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="eyebrow">About Waikru</div>
+  <h1>A second pair of eyes for your training</h1>
+
+  <div class="body-text">
+    <p>Waikru is an AI coaching tool built for Muay Thai practitioners who want honest, specific technique feedback between sessions. Upload a clip of your pad work, bag work, or shadow boxing and get a detailed report back in under two minutes.</p>
+
+    <p>The AI watches your full video and returns timestamped corrections tied to exactly what it sees happening in your footage. Not generic advice pulled from a template. Actual observations about your stance, your guard, your footwork, your combinations.</p>
+
+    <p>Think of it as a second pair of eyes when your coach isn't in the room. Something that catches the small things that are easy to miss and hard to self-correct without a reference point.</p>
+  </div>
+
+  <hr class="divider">
+
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="stat-value">2 min</div>
+      <div class="stat-label">Average analysis time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">500MB</div>
+      <div class="stat-label">Max video size</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">Free</div>
+      <div class="stat-label">To start — no card needed</div>
+    </div>
+  </div>
+
+  <div class="body-text">
+    <p>Waikru is in active development. The core analysis works well for pad work, bag work, and shadow boxing filmed from the side at waist height or above. Video quality and angle have a big effect on feedback quality — 720p from a phone propped against a bag is plenty.</p>
+
+    <p>Built in Lehigh Valley, PA. If you have feedback, thoughts, or you're a coach who wants to explore using this with your students, reach out at <a href="mailto:hello@waikru.app" style="color:var(--accent);text-decoration:none;">hello@waikru.app</a>.</p>
+  </div>
+
+  <div class="cta-block">
+    <h2>Ready to see your technique?</h2>
+    <p>Upload a training clip and get your first coaching report free.</p>
+    <a href="/" class="btn-pill">Try it free</a>
+  </div>
+</main>
+
+<footer>
+  <a href="/">Home</a>
+  <a href="/about">About</a>
+  <a href="mailto:hello@waikru.app">Contact</a>
+  <br><br>
+  &copy; 2026 Waikru. Informational use only — not professional coaching advice.
+</footer>
+
+<script>
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('waikru-theme', theme);
+  }
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+  const saved = localStorage.getItem('waikru-theme');
+  if (saved) applyTheme(saved);
+</script>
+</body>
+</html>

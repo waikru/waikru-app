@@ -60,7 +60,7 @@
         "step": [
           { "@type": "HowToStep", "position": 1, "name": "Record on your phone", "text": "Film 1 to 3 minutes of Muay Thai training from the side with your whole body in frame." },
           { "@type": "HowToStep", "position": 2, "name": "Drop the file in", "text": "Upload MP4, MOV, WebM, AVI, or MKV up to 500 MB. 720p is recommended." },
-          { "@type": "HowToStep", "position": 3, "name": "Gemini watches the full clip", "text": "Google Gemini 2.5 Flash analyzes the entire video — every strike, every combination." },
+          { "@type": "HowToStep", "position": 3, "name": "AI watches the full clip", "text": "The AI analyzes the entire video — every strike, every combination." },
           { "@type": "HowToStep", "position": 4, "name": "Read the report", "text": "Get specific corrections, what's working, and drills to focus on next session." }
         ]
       },
@@ -253,8 +253,11 @@
     }
     .theme-toggle:hover { border-color: var(--border-strong); color: var(--text-strong); }
     .btn-pill {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       padding: 8px 18px;
+      min-height: 48px;
       background: var(--text-strong);
       color: #fff;
       border: none;
@@ -266,8 +269,11 @@
     }
     .btn-pill:hover { background: var(--accent); }
     .btn-pill-outline {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       padding: 8px 18px;
+      min-height: 48px;
       background: transparent;
       color: var(--text-strong);
       border: 1px solid var(--border-strong);
@@ -428,6 +434,7 @@
     .btn-primary {
       display: inline-block;
       padding: 12px 28px;
+      min-height: 48px;
       background: var(--accent);
       color: #fff;
       border: none;
@@ -756,6 +763,8 @@
       grid-template-columns: 0.85fr 1.4fr;
       gap: 56px;
       align-items: start;
+      max-width: 1060px;
+      margin: 0 auto;
     }
     .faq-side h2 {
       font-size: clamp(28px, 3.6vw, 40px);
@@ -1081,7 +1090,7 @@
   <a onclick="scrollTo('howItWorks');closeMobileMenu()">How it works</a>
   <a onclick="scrollTo('pricingSection');closeMobileMenu()">Pricing</a>
   <a onclick="scrollTo('faqSection');closeMobileMenu()">FAQ</a>
-  <a onclick="scrollTo('aboutSection');closeMobileMenu()">About</a>
+  <a href="/about" onclick="closeMobileMenu()">About</a>
 </div>
 
 <!-- NAV -->
@@ -1093,7 +1102,7 @@
       <a onclick="document.getElementById('howItWorks').scrollIntoView({behavior:'smooth'})">How it works</a>
       <a onclick="document.getElementById('pricingSection').scrollIntoView({behavior:'smooth'})">Pricing</a>
       <a onclick="document.getElementById('faqSection').scrollIntoView({behavior:'smooth'})">FAQ</a>
-      <a onclick="document.getElementById('aboutSection').scrollIntoView({behavior:'smooth'})">About</a>
+      <a href="/about">About</a>
     </div>
     <div class="nav-right">
       <button class="theme-toggle" onclick="toggleTheme()">
@@ -1116,7 +1125,7 @@
   <div class="container">
     <div class="hero">
       <h1 id="hero-title">Upload your training video<br>to Waikru.</h1>
-      <p class="lede">AI Muay Thai coaching feedback in under two minutes. Upload pad work, bag work, or shadow boxing — Google Gemini analyzes your full clip and returns specific, timestamped corrections.</p>
+      <p class="lede">Specific, timestamped technique corrections. Free to try — no account needed.</p>
     </div>
 
     {% if not api_configured %}
@@ -1478,25 +1487,17 @@
         <h5>Product</h5>
         <ul>
           <li><a onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'})">Upload a video</a></li>
-          <li><a>How it works</a></li>
-          <li><a>Pricing</a></li>
-          <li><a>What to film</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Resources</h5>
-        <ul>
-          <li><a>FAQ</a></li>
-          <li><a>Coaching glossary</a></li>
-          <li><a>Sample report</a></li>
+          <li><a onclick="document.getElementById('howItWorks').scrollIntoView({behavior:'smooth'})">How it works</a></li>
+          <li><a onclick="document.getElementById('pricingSection').scrollIntoView({behavior:'smooth'})">Pricing</a></li>
+          <li><a onclick="document.getElementById('faqSection').scrollIntoView({behavior:'smooth'})">FAQ</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h5>Company</h5>
         <ul>
-          <li><a>About</a></li>
-          <li><a>Blog</a></li>
-          <li><a>Contact</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/login">Log in</a></li>
+          <li><a href="mailto:hello@waikru.app">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1510,7 +1511,7 @@
     </div>
     <div class="footer-bottom">
       <span>&copy; 2026 Waikru — Test Build</span>
-      <span>Powered by Google Gemini 2.5 Flash</span>
+      <span>AI-powered technique analysis</span>
     </div>
   </div>
 </footer>

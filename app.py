@@ -226,6 +226,11 @@ def index():
     return render_template('index.html', api_configured=bool(GEMINI_API_KEY))
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
     if not GEMINI_API_KEY:
