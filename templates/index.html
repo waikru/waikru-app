@@ -252,12 +252,6 @@
       transition: border-color 0.15s, color 0.15s;
     }
     .theme-toggle:hover { border-color: var(--border-strong); color: var(--text-strong); }
-    .theme-toggle .toggle-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
     .btn-pill {
       display: inline-block;
       padding: 8px 18px;
@@ -271,6 +265,74 @@
       text-decoration: none;
     }
     .btn-pill:hover { background: var(--accent); }
+    .btn-pill-outline {
+      display: inline-block;
+      padding: 8px 18px;
+      background: transparent;
+      color: var(--text-strong);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-pill-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      cursor: pointer;
+      color: var(--text-strong);
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 2px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-white);
+      z-index: 200;
+      flex-direction: column;
+      padding: 24px 28px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .mobile-menu-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-strong);
+    }
+    .mobile-menu a {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-strong);
+      text-decoration: none;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu a:last-of-type { border-bottom: none; }
 
     /* === HERO === */
     .hero-section {
@@ -885,6 +947,9 @@
       .hero-section { padding: 36px 0 48px; }
       .upload-zone { padding: 44px 20px 36px; }
       .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .btn-pill-outline { display: inline-block; }
+      .btn-upgrade, .nav-right .btn-pill:not(.btn-upgrade) { display: none; }
       .feature-grid { grid-template-columns: 1fr; }
       .feature-illustration { height: 180px; }
       .steps { grid-template-columns: repeat(2, 1fr); gap: 28px; }
@@ -1006,23 +1071,40 @@
 </head>
 <body>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <a href="/" class="logo">wai<span>kru</span></a>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">✕</button>
+  </div>
+  <a onclick="scrollTo('uploadZone');closeMobileMenu()">Upload</a>
+  <a onclick="scrollTo('howItWorks');closeMobileMenu()">How it works</a>
+  <a onclick="scrollTo('pricingSection');closeMobileMenu()">Pricing</a>
+  <a onclick="scrollTo('faqSection');closeMobileMenu()">FAQ</a>
+  <a onclick="scrollTo('aboutSection');closeMobileMenu()">About</a>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
     <a href="/" class="logo">wai<span>kru</span></a>
     <div class="nav-links">
-      <a>Upload</a>
-      <a>How it works</a>
-      <a>FAQ</a>
-      <a>About</a>
+      <a onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'})">Upload</a>
+      <a onclick="document.getElementById('howItWorks').scrollIntoView({behavior:'smooth'})">How it works</a>
+      <a onclick="document.getElementById('pricingSection').scrollIntoView({behavior:'smooth'})">Pricing</a>
+      <a onclick="document.getElementById('faqSection').scrollIntoView({behavior:'smooth'})">FAQ</a>
+      <a onclick="document.getElementById('aboutSection').scrollIntoView({behavior:'smooth'})">About</a>
     </div>
     <div class="nav-right">
       <button class="theme-toggle" onclick="toggleTheme()">
         <span id="themeIcon">🌙</span>
-        <span class="toggle-label" id="themeLabel">Dark</span>
       </button>
+      <a class="btn-pill-outline" href="/login">Log in</a>
       <button class="btn-pill btn-upgrade" onclick="openUpgrade()">Upgrade</button>
       <a class="btn-pill" onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'});">Try it free</a>
+      <button class="hamburger" onclick="openMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
@@ -1203,7 +1285,7 @@
 </section>
 
 <!-- GO BEYOND / HOW IT WORKS -->
-<section class="beyond-section" aria-labelledby="beyond-title">
+<section class="beyond-section" id="howItWorks" aria-labelledby="beyond-title">
   <div class="container">
     <h2 class="beyond-title" id="beyond-title">How to get AI Muay Thai coaching feedback in four steps.</h2>
     <div class="steps">
@@ -1253,7 +1335,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="faq-section" aria-labelledby="faq-title">
+<section class="faq-section" id="faqSection" aria-labelledby="faq-title">
   <div class="container">
     <div class="faq-wrap">
       <div class="faq-side">
@@ -1304,6 +1386,62 @@
           <div class="faq-answer">Only with their permission. Do not upload videos of minors without guardian consent or content you do not have the rights to share.</div>
         </details>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="faq-section" id="pricingSection" aria-labelledby="pricing-title">
+  <div class="container">
+    <div class="faq-wrap" style="display:block;max-width:760px;margin:0 auto;text-align:center;">
+      <h2 id="pricing-title" style="font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.5px;color:var(--text-strong);margin-bottom:12px;">Simple pricing</h2>
+      <p style="color:var(--text-muted);font-size:16px;margin-bottom:44px;">Start free. Upgrade when you're ready.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;text-align:left;">
+        <div style="background:var(--bg-white);border:1px solid var(--border);border-radius:16px;padding:28px 24px;">
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);margin-bottom:8px;">Free</div>
+          <div style="font-size:32px;font-weight:800;color:var(--text-strong);margin-bottom:4px;">$0</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">No credit card needed</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--text-muted);">
+            <li>✓ 1 upload per day</li>
+            <li>✓ Full coaching report</li>
+            <li>✓ No account required</li>
+          </ul>
+        </div>
+        <div style="background:var(--bg-white);border:2px solid var(--accent);border-radius:16px;padding:28px 24px;position:relative;">
+          <div style="position:absolute;top:-12px;left:24px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:0.5px;">Most popular</div>
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);margin-bottom:8px;">Starter</div>
+          <div style="font-size:32px;font-weight:800;color:var(--text-strong);margin-bottom:4px;">$9<span style="font-size:16px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Billed monthly</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--text-muted);">
+            <li>✓ 10 uploads per month</li>
+            <li>✓ Full coaching report</li>
+            <li>✓ Save past reports</li>
+          </ul>
+        </div>
+        <div style="background:var(--bg-white);border:1px solid var(--border);border-radius:16px;padding:28px 24px;">
+          <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-dim);margin-bottom:8px;">Pro</div>
+          <div style="font-size:32px;font-weight:800;color:var(--text-strong);margin-bottom:4px;">$19<span style="font-size:16px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Billed monthly</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--text-muted);">
+            <li>✓ Unlimited uploads</li>
+            <li>✓ Full coaching report</li>
+            <li>✓ Save past reports</li>
+            <li>✓ Priority processing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="faq-section" id="aboutSection" aria-labelledby="about-title">
+  <div class="container">
+    <div class="faq-wrap" style="display:block;max-width:680px;margin:0 auto;">
+      <h2 id="about-title" style="font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.5px;color:var(--text-strong);margin-bottom:20px;">About Waikru</h2>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:16px;">Waikru is an AI coaching tool built for Muay Thai practitioners who want honest, specific technique feedback between sessions. Upload a clip of your pad work, bag work, or shadow boxing and get a detailed report back in under two minutes.</p>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:16px;">Powered by Google Gemini 2.5 Flash, Waikru watches your full video and returns timestamped corrections — not generic advice. Think of it as a second pair of eyes when your coach isn't in the room.</p>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;">Built in Lehigh Valley, PA. Currently in test build — feedback welcome.</p>
     </div>
   </div>
 </section>
@@ -1480,6 +1618,19 @@
   function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme');
     applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  function openMobileMenu() {
+    document.getElementById('mobileMenu').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   }
 
   function openTerms(e) {
