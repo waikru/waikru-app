@@ -199,15 +199,12 @@
 
     /* === NAV === */
     nav {
-      background: var(--bg-white);
-      border-bottom: 1px solid var(--border);
+      background: none;
       position: sticky;
       top: 0;
       z-index: 50;
     }
     .nav-inner {
-      max-width: 1160px;
-      margin: 0 auto;
       padding: 14px 32px;
       display: flex;
       align-items: center;
@@ -958,7 +955,6 @@
       .nav-links { display: none; }
       .hamburger { display: flex; }
       .btn-pill-outline { display: inline-block; }
-      .btn-upgrade, .nav-right .btn-pill:not(.btn-upgrade) { display: none; }
       .feature-grid { grid-template-columns: 1fr; }
       .feature-illustration { height: 180px; }
       .steps { grid-template-columns: repeat(2, 1fr); gap: 28px; }
@@ -1105,12 +1101,8 @@
       <a href="/about">About</a>
     </div>
     <div class="nav-right">
-      <button class="theme-toggle" onclick="toggleTheme()">
-        <span id="themeIcon">🌙</span>
-      </button>
       <a class="btn-pill-outline" href="/login">Log in</a>
-      <button class="btn-pill btn-upgrade" onclick="openUpgrade()">Upgrade</button>
-      <a class="btn-pill" onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'});">Try it free</a>
+      <a class="btn-pill" href="/signup">Join free</a>
       <button class="hamburger" onclick="openMobileMenu()" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
@@ -1511,7 +1503,10 @@
     </div>
     <div class="footer-bottom">
       <span>&copy; 2026 Waikru — Test Build</span>
-      <span>AI-powered technique analysis</span>
+      <button class="theme-toggle" onclick="toggleTheme()" style="margin:0;">
+        <span id="themeIcon">🌙</span>
+        <span class="toggle-label" id="themeLabel" style="font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;">Dark</span>
+      </button>
     </div>
   </div>
 </footer>

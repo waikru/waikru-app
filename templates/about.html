@@ -42,15 +42,12 @@
       transition: background 0.2s, color 0.2s;
     }
     nav {
-      background: var(--bg-white);
-      border-bottom: 1px solid var(--border);
+      background: none;
       position: sticky;
       top: 0;
       z-index: 50;
     }
     .nav-inner {
-      max-width: 1160px;
-      margin: 0 auto;
       padding: 14px 32px;
       display: flex;
       align-items: center;
@@ -211,9 +208,8 @@
   <div class="nav-inner">
     <a href="/" class="logo">wai<span>kru</span></a>
     <div class="nav-right">
-      <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">🌙</span></button>
       <a href="/login" class="btn-pill-outline">Log in</a>
-      <a href="/" class="btn-pill">Try it free</a>
+      <a href="/signup" class="btn-pill">Join free</a>
     </div>
   </div>
 </nav>
@@ -260,18 +256,21 @@
   </div>
 </main>
 
-<footer>
-  <a href="/">Home</a>
-  <a href="/about">About</a>
-  <a href="mailto:hello@waikru.app">Contact</a>
-  <br><br>
-  &copy; 2026 Waikru. Informational use only — not professional coaching advice.
+<footer style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:32px;font-size:12px;color:var(--text-dim);border-top:1px solid var(--border);margin-top:80px;">
+  <span>&copy; 2026 Waikru &nbsp;&middot;&nbsp; <a href="/" style="color:var(--text-dim);text-decoration:none;">Home</a> &nbsp;&middot;&nbsp; <a href="mailto:hello@waikru.app" style="color:var(--text-dim);text-decoration:none;">Contact</a></span>
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span id="themeIcon">🌙</span>
+    <span id="themeLabel" style="font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;margin-left:4px;">Dark</span>
+  </button>
 </footer>
 
 <script>
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
     localStorage.setItem('waikru-theme', theme);
   }
   function toggleTheme() {
