@@ -1065,7 +1065,7 @@
       <a onclick="document.getElementById('uploadZone').click()">Choose a video file</a> or drag and drop it above
     </div>
 
-    <div class="format-chips">
+    <div class="format-chips" id="formatChips" style="display:none;">
       <span class="chip is-active">MP4</span>
       <span class="chip">MOV</span>
       <span class="chip">AVI</span>
@@ -1562,6 +1562,7 @@
   function showError(msg) {
     errorMsg.textContent = msg;
     errorMsg.style.display = 'block';
+    document.getElementById('formatChips').style.display = 'flex';
     document.getElementById('analyzing-overlay').classList.remove('active');
     btnAnalyze.disabled = false;
   }
