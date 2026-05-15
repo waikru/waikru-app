@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waikru — AI Muay Thai Coach | Free Video Technique Analysis</title>
+  <meta name="description" content="Upload a training video and get AI Muay Thai coaching feedback in under two minutes. Specific, timestamped corrections on pad work, bag work, and shadow boxing — powered by Google Gemini. Free during test build.">
+  <meta name="keywords" content="AI Muay Thai coach, Muay Thai video analysis, AI coaching feedback, pad work analysis, shadow boxing technique, bag work feedback, AI sports coach, Muay Thai technique review">
+  <meta name="author" content="Waikru">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#f1f5f9">
+  <link rel="canonical" href="https://waikru.com/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://waikru.com/">
+  <meta property="og:title" content="Waikru — AI Muay Thai Coach">
+  <meta property="og:description" content="Upload a training video. Gemini analyzes your technique and returns specific, timestamped coaching feedback in under two minutes.">
+  <meta property="og:site_name" content="Waikru">
+  <meta property="og:image" content="https://waikru.com/og-image.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Waikru — AI Muay Thai Coach">
+  <meta name="twitter:description" content="Upload a training video. Gemini returns specific Muay Thai coaching feedback in minutes.">
+  <meta name="twitter:image" content="https://waikru.com/og-image.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://waikru.com/#app",
+        "name": "Waikru",
+        "url": "https://waikru.com/",
+        "description": "AI Muay Thai coach. Upload a training video and Google Gemini analyzes your pad work, bag work, or shadow boxing — returning specific, timestamped technique corrections in under two minutes.",
+        "applicationCategory": "SportsApplication",
+        "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript and a modern browser.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "Waikru",
+          "url": "https://waikru.com/"
+        }
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to get AI Muay Thai coaching feedback from a training video",
+        "description": "Four steps to turn a phone clip of pad work, bag work, or shadow boxing into specific, timestamped coaching feedback.",
+        "totalTime": "PT2M",
+        "step": [
+          { "@type": "HowToStep", "position": 1, "name": "Record on your phone", "text": "Film 1 to 3 minutes of Muay Thai training from the side with your whole body in frame." },
+          { "@type": "HowToStep", "position": 2, "name": "Drop the file in", "text": "Upload MP4, MOV, WebM, AVI, or MKV up to 500 MB. 720p is recommended." },
+          { "@type": "HowToStep", "position": 3, "name": "Gemini watches the full clip", "text": "Google Gemini 2.5 Flash analyzes the entire video — every strike, every combination." },
+          { "@type": "HowToStep", "position": 4, "name": "Read the report", "text": "Get specific corrections, what's working, and drills to focus on next session." }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What kind of video should I upload to Waikru?",
+            "acceptedAnswer": { "@type": "Answer", "text": "A 1–3 minute clip of pad work, bag work, or shadow boxing works best. Film from the side with your whole body in frame; good lighting helps the AI see your technique." }
+          },
+          {
+            "@type": "Question",
+            "name": "What video file types and sizes does Waikru support?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Waikru supports MP4, MOV, WebM, AVI, and MKV up to 500 MB. 720p is plenty — higher resolutions slow the upload without improving feedback quality." }
+          },
+          {
+            "@type": "Question",
+            "name": "How long does the AI analysis take?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Usually under two minutes for a 3-minute clip. Upload time depends on your connection and file size. Live progress is shown while it runs." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my training video private on Waikru?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Your video is sent to Google Gemini for analysis and deleted from Waikru's servers immediately after the report is generated. Waikru does not store, share, or sell your footage." }
+          },
+          {
+            "@type": "Question",
+            "name": "How accurate is the AI Muay Thai feedback?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Gemini reliably catches stance, hand position, and obvious mechanical issues. Treat it as a second pair of eyes between sessions — not a replacement for a qualified coach." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I upload someone else's Muay Thai training video?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Only with their permission. Do not upload videos of minors without guardian consent or content you do not have the rights to share." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      /* Vimeo chroma scale (RGB triplets, used with rgb()/rgba()) */
+      --c-50: 250,252,253;
+      --c-100: 241,245,249;
+      --c-200: 223,228,234;
+      --c-300: 209,217,225;
+      --c-400: 169,178,188;
+      --c-500: 116,128,140;
+      --c-550: 76,88,100;
+      --c-600: 61,71,81;
+      --c-700: 40,49,58;
+      --c-800: 25,32,40;
+      --c-900: 20,26,32;
+
+      --bg: rgb(var(--c-100));
+      --bg-white: #ffffff;
+      --bg-zone: rgb(var(--c-50));
+      --bg-zone-hover: rgb(var(--c-100));
+      --bg-illustration-1: #dfe7ef;
+      --bg-illustration-2: #e8efea;
+      --bg-illustration-3: #efe7e3;
+      --bg-illustration-4: #e7ecf2;
+      --bg-progress: rgb(var(--c-200));
+      --bg-overlay: rgba(var(--c-100),0.96);
+      --text: rgb(var(--c-800));
+      --text-strong: rgb(var(--c-900));
+      --text-muted: rgb(var(--c-600));
+      --text-dim: rgb(var(--c-500));
+      --text-dimmer: rgb(var(--c-400));
+      --border: rgb(var(--c-200));
+      --border-dashed: rgb(var(--c-300));
+      --border-strong: rgb(var(--c-300));
+      --accent: #e8432d;
+      --accent-hover: #d63a25;
+      --accent-soft: #fdece9;
+      --btn-disabled-bg: rgb(var(--c-200));
+      --btn-disabled-color: rgb(var(--c-400));
+      --toggle-bg: #ffffff;
+      --spinner-track: rgb(var(--c-200));
+    }
+
+    [data-theme="dark"] {
+      --bg: #0d0d0d;
+      --bg-white: #1a1a1a;
+      --bg-zone: #141414;
+      --bg-zone-hover: #1c1c1c;
+      --bg-illustration-1: #1c2024;
+      --bg-illustration-2: #182019;
+      --bg-illustration-3: #211b16;
+      --bg-illustration-4: #181c22;
+      --bg-progress: #1a1a1a;
+      --bg-overlay: rgba(0,0,0,0.92);
+      --text: #f0f0f0;
+      --text-strong: #ffffff;
+      --text-muted: #b5bfc8;
+      --text-dim: #8a96a3;
+      --text-dimmer: #5e6873;
+      --border: #2a2a2a;
+      --border-dashed: #3a3a3a;
+      --border-strong: #3a3a3a;
+      --accent-soft: #2a1612;
+      --btn-disabled-bg: #2a2a2a;
+      --btn-disabled-color: #555;
+      --toggle-bg: #1f1f1f;
+      --spinner-track: #222;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+    body {
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* === NAV === */
+    nav {
+      background: var(--bg-white);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-links a:hover { color: var(--text-strong); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .theme-toggle:hover { border-color: var(--border-strong); color: var(--text-strong); }
+    .theme-toggle .toggle-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .btn-pill {
+      display: inline-block;
+      padding: 8px 18px;
+      background: var(--text-strong);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-pill:hover { background: var(--accent); }
+
+    /* === HERO === */
+    .hero-section {
+      padding: 56px 0 72px;
+    }
+    .hero {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 32px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      color: var(--text-strong);
+    }
+    .hero p.lede {
+      font-size: clamp(15px, 1.4vw, 18px);
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-top: 18px;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    {% if not api_configured %}
+    .warning-banner {
+      max-width: 560px;
+      margin: 0 auto 20px;
+      background: #fff4e0;
+      border: 1px solid #f0c674;
+      color: #8a5a00;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+    [data-theme="dark"] .warning-banner {
+      background: #2a1a00;
+      border-color: #7a4500;
+      color: #e8a020;
+    }
+    .warning-banner strong { display: inline-block; margin-right: 6px; }
+    {% endif %}
+
+    .upload-card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .upload-zone {
+      background: var(--bg-zone);
+      border: 1.5px dashed var(--border-dashed);
+      border-radius: 12px;
+      padding: 56px 24px 48px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .upload-zone:hover { background: var(--bg-zone-hover); }
+    .upload-zone.dragover {
+      border-color: var(--accent);
+      background: var(--bg-zone-hover);
+    }
+    .upload-zone.has-file { border-color: var(--accent); border-style: solid; }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .cloud-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-strong);
+    }
+    .cloud-icon svg { width: 26px; height: 26px; stroke: currentColor; }
+    .upload-zone h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-strong);
+      margin-bottom: 20px;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.08s;
+      letter-spacing: 0.2px;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-primary:active:not(:disabled) { transform: scale(0.98); }
+    .btn-primary:disabled {
+      background: var(--btn-disabled-bg);
+      color: var(--btn-disabled-color);
+      cursor: not-allowed;
+    }
+
+    .hero-helper {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 18px;
+    }
+    .hero-helper a {
+      color: var(--text-strong);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .format-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 18px;
+    }
+    .chip {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 14px;
+      letter-spacing: 0.3px;
+    }
+    .chip.is-active {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .file-selected {
+      display: none;
+      max-width: 900px;
+      margin: 16px auto 0;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: left;
+    }
+    .file-selected .filename {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-selected .filesize {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .terms-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      max-width: 900px;
+      margin: 14px auto 0;
+      padding: 0 8px;
+    }
+    .terms-row input[type="checkbox"] {
+      width: 16px; height: 16px;
+      flex-shrink: 0; margin-top: 2px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .terms-row label {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.55;
+      cursor: pointer;
+    }
+    .terms-row label a {
+      color: var(--text-strong);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .error-msg {
+      display: none;
+      margin: 12px auto 0;
+      max-width: 900px;
+      color: var(--accent);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* === Sections === */
+    .section { padding: 56px 0; background: #fafcfd; }
+    .section + .section { padding-top: 0; }
+    .beyond-section,
+    .faq-section,
+    .cta-section { background: #fafcfd; }
+    [data-theme="dark"] .section,
+    [data-theme="dark"] .beyond-section,
+    [data-theme="dark"] .faq-section,
+    [data-theme="dark"] .cta-section { background: var(--bg); }
+
+    /* === Feature cards (image-on-top) === */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .feature-illustration {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-illustration svg { width: 100%; height: 100%; display: block; }
+    .feature-illustration.tone-1 { background: var(--bg-illustration-1); }
+    .feature-illustration.tone-2 { background: var(--bg-illustration-2); }
+    .feature-illustration.tone-3 { background: var(--bg-illustration-3); }
+    .feature-illustration.tone-4 { background: var(--bg-illustration-4); }
+    .feature-text { padding: 22px 24px 26px; }
+    .feature-text h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+    .feature-text p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* === "Go beyond" section === */
+    .beyond-section { padding: 80px 0 64px; text-align: center; }
+    .beyond-title {
+      font-size: clamp(24px, 3.4vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: var(--text-strong);
+      max-width: 720px;
+      margin: 0 auto 44px;
+      line-height: 1.2;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .step-item { text-align: center; }
+    .step-icon {
+      width: 56px; height: 56px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-strong);
+    }
+    .step-icon svg { width: 100%; height: 100%; stroke: currentColor; }
+    .step-item h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .step-item p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* === FAQ === */
+    .faq-section { padding: 56px 0 80px; }
+    .faq-wrap {
+      display: grid;
+      grid-template-columns: 0.85fr 1.4fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .faq-side h2 {
+      font-size: clamp(28px, 3.6vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text-strong);
+      line-height: 1.1;
+    }
+    .faq-side p {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-top: 14px;
+      line-height: 1.6;
+    }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item {
+      border-top: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+    .faq-item summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-strong);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-chevron {
+      width: 16px; height: 16px;
+      color: var(--text-dim);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+    .faq-answer {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      padding-right: 32px;
+    }
+
+    /* === Get started === */
+    .cta-section { padding: 64px 0 80px; }
+    .cta-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .cta-side h2 {
+      font-size: clamp(28px, 3.6vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text-strong);
+      line-height: 1.1;
+    }
+    .cta-side p {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-top: 14px;
+      line-height: 1.6;
+    }
+    .cta-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .cta-card label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .cta-card input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 14px;
+      background: var(--bg-zone);
+      color: var(--text);
+      font-family: inherit;
+    }
+    .cta-card input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .cta-card .btn-primary {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      font-size: 15px;
+    }
+    .cta-card small {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    /* === Footer === */
+    footer {
+      background: var(--bg-white);
+      border-top: 1px solid var(--border);
+      padding: 56px 0 28px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+      gap: 36px;
+    }
+    .footer-brand .logo { font-size: 20px; }
+    .footer-brand p {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+      max-width: 260px;
+    }
+    .footer-col h5 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-strong);
+      margin-bottom: 14px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .footer-col a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .footer-col a:hover { color: var(--text-strong); }
+    .footer-bottom {
+      margin-top: 44px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* === Wider on XL screens === */
+    @media (min-width: 1280px) {
+      .section .container,
+      .beyond-section .container,
+      .faq-section .container,
+      .cta-section .container { max-width: 1360px; }
+      .feature-grid { gap: 24px; }
+      .feature-illustration { height: 260px; }
+      .steps { max-width: 1200px; gap: 36px; }
+      .faq-wrap { gap: 80px; }
+      .cta-wrap { gap: 64px; }
+      .upload-zone {
+        min-height: 520px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    @media (min-width: 1600px) {
+      .section .container,
+      .beyond-section .container,
+      .faq-section .container,
+      .cta-section .container { max-width: 1520px; }
+      .feature-illustration { height: 300px; }
+      .steps { max-width: 1360px; }
+    }
+
+    /* === Responsive === */
+    @media (max-width: 960px) {
+      .hero-section { padding: 36px 0 48px; }
+      .upload-zone { padding: 44px 20px 36px; }
+      .nav-links { display: none; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature-illustration { height: 180px; }
+      .steps { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+      .faq-wrap { grid-template-columns: 1fr; gap: 26px; }
+      .cta-wrap { grid-template-columns: 1fr; gap: 24px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+    @media (max-width: 520px) {
+      .container { padding: 0 18px; }
+      .nav-inner { padding: 12px 18px; }
+      .steps { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    /* === Analyzing overlay === */
+    #analyzing-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: var(--bg-overlay);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+    #analyzing-overlay.active { display: flex; }
+    .spinner {
+      width: 52px; height: 52px;
+      border: 3px solid var(--spinner-track);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 22px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .analyzing-title {
+      font-size: 20px; font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 10px;
+    }
+    .analyzing-step {
+      font-size: 14px; color: var(--text-dim);
+      text-align: center; min-height: 20px;
+    }
+    .upload-progress { width: 100%; max-width: 320px; margin-top: 20px; }
+    .progress-bar-bg {
+      background: var(--bg-progress);
+      border-radius: 4px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .progress-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* === Terms modal === */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(15,20,25,0.55);
+      z-index: 200;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg-white);
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 28px 24px;
+    }
+    .modal h2 {
+      font-size: 20px; font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 16px;
+    }
+    .modal h3 {
+      font-size: 13px; font-weight: 700;
+      color: var(--text-strong);
+      margin: 16px 0 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .modal p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .modal-close {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal-close:hover { background: var(--accent-hover); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">wai<span>kru</span></a>
+    <div class="nav-links">
+      <a>Upload</a>
+      <a>How it works</a>
+      <a>FAQ</a>
+      <a>About</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="themeIcon">🌙</span>
+        <span class="toggle-label" id="themeLabel">Dark</span>
+      </button>
+      <a class="btn-pill" onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'});">Try it free</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO + UPLOAD -->
+<section class="hero-section" aria-labelledby="hero-title">
+  <div class="container">
+    <div class="hero">
+      <h1 id="hero-title">Upload your training video<br>to Waikru.</h1>
+      <p class="lede">AI Muay Thai coaching feedback in under two minutes. Upload pad work, bag work, or shadow boxing — Google Gemini analyzes your full clip and returns specific, timestamped corrections.</p>
+    </div>
+
+    {% if not api_configured %}
+    <div class="warning-banner">
+      <strong>GEMINI_API_KEY not set.</strong>
+      Set the env var before running: <code>export GEMINI_API_KEY=your_key</code>
+    </div>
+    {% endif %}
+
+    <div class="upload-card">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="videoInput" accept="video/mp4,video/quicktime,video/avi,video/webm,video/x-matroska,.mp4,.mov,.avi,.webm,.mkv,.m4v">
+        <div class="cloud-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+            <path d="M12 12v9"></path>
+            <path d="M16 16l-4-4-4 4"></path>
+          </svg>
+        </div>
+        <h2>Upload your video file(s)</h2>
+        <button type="button" class="btn-primary" id="btnAnalyze" disabled onclick="startAnalysis()">
+          Try it free
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-helper">
+      <a onclick="document.getElementById('uploadZone').click()">Choose a video file</a> or drag and drop it above
+    </div>
+
+    <div class="format-chips">
+      <span class="chip is-active">MP4</span>
+      <span class="chip">MOV</span>
+      <span class="chip">AVI</span>
+      <span class="chip">WebM</span>
+      <span class="chip">MKV</span>
+      <span class="chip">M4V</span>
+    </div>
+
+    <div class="file-selected" id="fileSelected">
+      <div class="filename" id="fileName"></div>
+      <div class="filesize" id="fileSize"></div>
+    </div>
+
+    <div class="terms-row">
+      <input type="checkbox" id="termsCheck" onchange="updateAnalyzeBtn()">
+      <label for="termsCheck">
+        I agree to the <a onclick="openTerms(event)">Terms of Use &amp; Privacy Policy</a>. My video will be processed by Google Gemini AI; feedback is informational, not professional coaching advice.
+      </label>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+</section>
+
+<!-- FEATURE ROW 1 -->
+<section class="section" aria-label="What Waikru does">
+  <h2 class="sr-only">Free AI Muay Thai video analysis</h2>
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-illustration tone-1">
+          <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="30" width="320" height="160" rx="10" fill="#0f1419"/>
+            <polygon points="180,90 180,130 220,110" fill="#fff"/>
+            <rect x="56" y="166" width="288" height="3" rx="1.5" fill="#fff" opacity="0.25"/>
+            <rect x="56" y="166" width="130" height="3" rx="1.5" fill="#e8432d"/>
+            <circle cx="186" cy="167.5" r="5" fill="#e8432d"/>
+            <rect x="56" y="148" width="32" height="6" rx="2" fill="#fff" opacity="0.6"/>
+            <rect x="316" y="148" width="32" height="6" rx="2" fill="#fff" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3>Analyze your training for free</h3>
+          <p>Upload a short clip and Gemini reviews your full video — no account, no card, no cap on how often you can do it during the test build.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-illustration tone-2">
+          <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="30" width="220" height="160" rx="10" fill="#fff" stroke="#cfd6dc"/>
+            <rect x="56" y="46" width="120" height="9" rx="3" fill="#0f1419"/>
+            <rect x="56" y="62" width="180" height="5" rx="2" fill="#cfd6dc"/>
+            <rect x="56" y="74" width="160" height="5" rx="2" fill="#cfd6dc"/>
+            <rect x="56" y="98" width="188" height="36" rx="6" fill="#fdece9"/>
+            <circle cx="74" cy="116" r="7" fill="#e8432d"/>
+            <rect x="88" y="110" width="140" height="5" rx="2" fill="#e8432d"/>
+            <rect x="88" y="119" width="100" height="5" rx="2" fill="#e8432d" opacity="0.5"/>
+            <rect x="56" y="146" width="188" height="30" rx="6" fill="#f1f5f9"/>
+            <circle cx="74" cy="161" r="6" fill="#94a2af"/>
+            <rect x="88" y="156" width="120" height="4" rx="2" fill="#0f1419" opacity="0.55"/>
+            <rect x="88" y="164" width="80" height="4" rx="2" fill="#0f1419" opacity="0.3"/>
+            <rect x="280" y="46" width="80" height="144" rx="8" fill="#0f1419" opacity="0.08"/>
+            <circle cx="320" cy="80" r="14" fill="#e8432d"/>
+            <rect x="294" y="106" width="52" height="4" rx="2" fill="#0f1419" opacity="0.3"/>
+            <rect x="294" y="118" width="52" height="4" rx="2" fill="#0f1419" opacity="0.3"/>
+            <rect x="294" y="130" width="36" height="4" rx="2" fill="#0f1419" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3>Specific, named corrections</h3>
+          <p>Not "tighten up your form" — actual coaching cues: which hand drops, when your hip stops rotating, which combination falls apart.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE ROW 2 -->
+<section class="section" aria-label="How the feedback works">
+  <h2 class="sr-only">Timestamped Muay Thai technique corrections</h2>
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-illustration tone-3">
+          <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect x="40" y="30" width="320" height="160" rx="10" fill="#fff" stroke="#cfd6dc"/>
+            <text x="60" y="62" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#0f1419">Top corrections</text>
+            <rect x="60" y="74" width="280" height="32" rx="6" fill="#f1f5f9"/>
+            <circle cx="76" cy="90" r="7" fill="#e8432d"/>
+            <text x="92" y="88" font-family="-apple-system,sans-serif" font-size="10" font-weight="600" fill="#0f1419">Drop your lead hand on the return</text>
+            <text x="92" y="100" font-family="-apple-system,sans-serif" font-size="9" fill="#6b7a87">0:42 — left hook</text>
+            <rect x="60" y="114" width="280" height="32" rx="6" fill="#f1f5f9"/>
+            <circle cx="76" cy="130" r="7" fill="#e8432d"/>
+            <text x="92" y="128" font-family="-apple-system,sans-serif" font-size="10" font-weight="600" fill="#0f1419">Rotate further on the right kick</text>
+            <text x="92" y="140" font-family="-apple-system,sans-serif" font-size="9" fill="#6b7a87">1:08 — round kick</text>
+            <rect x="60" y="154" width="280" height="32" rx="6" fill="#f1f5f9"/>
+            <circle cx="76" cy="170" r="7" fill="#e8432d"/>
+            <text x="92" y="168" font-family="-apple-system,sans-serif" font-size="10" font-weight="600" fill="#0f1419">Get the elbow tucked on the cross</text>
+            <text x="92" y="180" font-family="-apple-system,sans-serif" font-size="9" fill="#6b7a87">2:14 — 1-2 combo</text>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3>Tied to the timestamp</h3>
+          <p>Every correction points to the second of the clip where it happens — so you can rewatch the exact moment and feel the difference next session.</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-illustration tone-4">
+          <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="40" width="100" height="140" rx="10" fill="#fff" stroke="#cfd6dc"/>
+            <circle cx="80" cy="90" r="22" fill="#fdece9"/>
+            <path d="M80 80 v22 M70 91 h20" stroke="#e8432d" stroke-width="3" stroke-linecap="round"/>
+            <rect x="46" y="128" width="68" height="6" rx="3" fill="#0f1419" opacity="0.75"/>
+            <rect x="56" y="142" width="48" height="4" rx="2" fill="#0f1419" opacity="0.35"/>
+            <rect x="150" y="40" width="100" height="140" rx="10" fill="#fff" stroke="#cfd6dc"/>
+            <circle cx="200" cy="90" r="22" fill="#dfe7ef"/>
+            <path d="M190 84 q10 14 20 0" stroke="#0f1419" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="194" cy="98" r="2" fill="#0f1419"/>
+            <circle cx="206" cy="98" r="2" fill="#0f1419"/>
+            <rect x="166" y="128" width="68" height="6" rx="3" fill="#0f1419" opacity="0.75"/>
+            <rect x="176" y="142" width="48" height="4" rx="2" fill="#0f1419" opacity="0.35"/>
+            <rect x="270" y="40" width="100" height="140" rx="10" fill="#fff" stroke="#cfd6dc"/>
+            <circle cx="320" cy="90" r="22" fill="#e8efea"/>
+            <path d="M308 86 l24 8 M308 94 l24 -8" stroke="#0f1419" stroke-width="3" stroke-linecap="round"/>
+            <rect x="286" y="128" width="68" height="6" rx="3" fill="#0f1419" opacity="0.75"/>
+            <rect x="296" y="142" width="48" height="4" rx="2" fill="#0f1419" opacity="0.35"/>
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3>Pad work, bag work, shadow boxing</h3>
+          <p>Upload whatever you're drilling. Waikru handles solo work, partner pad rounds, and bag rounds — adjusting what it looks for to match.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GO BEYOND / HOW IT WORKS -->
+<section class="beyond-section" aria-labelledby="beyond-title">
+  <div class="container">
+    <h2 class="beyond-title" id="beyond-title">How to get AI Muay Thai coaching feedback in four steps.</h2>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-icon">
+          <svg viewBox="0 0 56 56" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="16" width="32" height="24" rx="3"/>
+            <path d="M41 24 l7 -4 v16 l-7 -4z"/>
+            <circle cx="18" cy="28" r="2.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <h4>Record on your phone</h4>
+        <p>Side angle, full body in frame.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">
+          <svg viewBox="0 0 56 56" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M44 38a7 7 0 0 0 -3 -14 h-2A11 11 0 0 0 16 26 a7 7 0 0 0 0 14"/>
+            <path d="M28 26 v18 M21 33 l7 -7 7 7"/>
+          </svg>
+        </div>
+        <h4>Drop the file in</h4>
+        <p>MP4, MOV, WebM, AVI, MKV.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">
+          <svg viewBox="0 0 56 56" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="28" cy="28" r="18"/>
+            <path d="M28 16 v12 l8 6"/>
+          </svg>
+        </div>
+        <h4>Gemini watches</h4>
+        <p>Full clip, every strike, every combo.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">
+          <svg viewBox="0 0 56 56" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="10" width="32" height="36" rx="3"/>
+            <path d="M20 20 h18 M20 28 h18 M20 36 h12"/>
+          </svg>
+        </div>
+        <h4>Read the report</h4>
+        <p>Corrections, wins, drills for next time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="faq-wrap">
+      <div class="faq-side">
+        <h2 id="faq-title">Frequently asked questions about Waikru.</h2>
+        <p>How Waikru handles your training video, what AI coaching feedback to expect, and what makes a good Muay Thai clip to upload.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>
+            What kind of video should I upload to Waikru?
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </summary>
+          <div class="faq-answer">A 1–3 minute clip of pad work, bag work, or shadow boxing works best. Film from the side with your whole body in frame; good lighting helps the AI see your technique.</div>
+        </details>
+        <details class="faq-item">
+          <summary>
+            What video file types and sizes does Waikru support?
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </summary>
+          <div class="faq-answer">Waikru supports MP4, MOV, WebM, AVI, and MKV up to 500 MB. 720p is plenty — higher resolutions slow the upload without improving feedback quality.</div>
+        </details>
+        <details class="faq-item">
+          <summary>
+            How long does the AI analysis take?
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </summary>
+          <div class="faq-answer">Usually under two minutes for a 3-minute clip. Upload time depends on your connection and file size. Live progress is shown while it runs.</div>
+        </details>
+        <details class="faq-item">
+          <summary>
+            Is my training video private on Waikru?
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </summary>
+          <div class="faq-answer">Your video is sent to Google Gemini for analysis and deleted from Waikru's servers immediately after the report is generated. Waikru does not store, share, or sell your footage.</div>
+        </details>
+        <details class="faq-item">
+          <summary>
+            How accurate is the AI Muay Thai feedback?
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </summary>
+          <div class="faq-answer">Gemini reliably catches stance, hand position, and obvious mechanical issues. Treat it as a second pair of eyes between sessions — not a replacement for a qualified coach.</div>
+        </details>
+        <details class="faq-item">
+          <summary>
+            Can I upload someone else's Muay Thai training video?
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </summary>
+          <div class="faq-answer">Only with their permission. Do not upload videos of minors without guardian consent or content you do not have the rights to share.</div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GET STARTED -->
+<section class="cta-section" aria-labelledby="cta-title">
+  <div class="container">
+    <div class="cta-wrap">
+      <div class="cta-side">
+        <h2 id="cta-title">Get AI Muay Thai coaching feedback for free.</h2>
+        <p>Drop a clip in and Gemini gets to work. Feedback usually arrives in under two minutes — no account required during the Waikru test build.</p>
+      </div>
+      <div class="cta-card">
+        <label for="emailFake">Your email (optional)</label>
+        <input id="emailFake" type="email" placeholder="you@example.com" autocomplete="email">
+        <button type="button" class="btn-primary" onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'})">Upload a video</button>
+        <small>No card required. By uploading you agree to the Terms.</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">wai<span>kru</span></a>
+        <p>AI Muay Thai coaching feedback for your training videos. Informational use only — not professional coaching advice.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul>
+          <li><a onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'})">Upload a video</a></li>
+          <li><a>How it works</a></li>
+          <li><a>Pricing</a></li>
+          <li><a>What to film</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a>FAQ</a></li>
+          <li><a>Coaching glossary</a></li>
+          <li><a>Sample report</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a>About</a></li>
+          <li><a>Blog</a></li>
+          <li><a>Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a onclick="openTerms(event)">Terms of Use</a></li>
+          <li><a onclick="openTerms(event)">Privacy Policy</a></li>
+          <li><a onclick="openTerms(event)">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Waikru — Test Build</span>
+      <span>Powered by Google Gemini 2.5 Flash</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TERMS MODAL -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal">
+    <h2>Terms of Use &amp; Privacy Policy</h2>
+
+    <h3>Informational Use Only</h3>
+    <p>Waikru provides AI-generated coaching feedback for informational and educational purposes only. This is not a substitute for professional coaching, medical advice, or personal training. You assume full responsibility for how you use any feedback provided.</p>
+
+    <h3>Limitation of Liability</h3>
+    <p>Waikru and its operators are not liable for any injury, loss, or damage arising from your use of this service or any action taken based on feedback provided. By using Waikru you agree to hold harmless Waikru, its founders, and operators from any claims related to your training or use of this service.</p>
+
+    <h3>Data Collection &amp; Processing</h3>
+    <p>By uploading a video you consent to the following: your video is transmitted to Google Gemini AI for analysis. Google may process and temporarily retain your video in accordance with their API terms of service. Waikru deletes your video from our servers immediately after analysis is complete. We do not store, share, or sell your video to any third parties.</p>
+
+    <h3>Content You Upload</h3>
+    <p>You confirm that you own the rights to any video you upload, or have permission to use it. Do not upload videos of minors without guardian consent. Do not upload content depicting illegal activity.</p>
+
+    <h3>No Guarantee of Results</h3>
+    <p>AI-generated feedback may not be accurate, complete, or applicable to your specific situation. Always train under the supervision of a qualified coach when attempting new techniques.</p>
+
+    <p style="margin-top:14px;font-size:11px;color:var(--text-dim);">Last updated May 2026. Checking the box confirms you agree to these terms.</p>
+
+    <button class="modal-close" onclick="closeTerms()">I Understand — Close</button>
+  </div>
+</div>
+
+<!-- ANALYZING OVERLAY -->
+<div id="analyzing-overlay">
+  <div class="spinner"></div>
+  <div class="analyzing-title">Analyzing your technique...</div>
+  <div class="analyzing-step" id="analyzingStep">Uploading video...</div>
+  <div class="upload-progress">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-label" id="progressLabel"></div>
+  </div>
+</div>
+
+<script>
+  const savedTheme = localStorage.getItem('waikru-theme') || 'light';
+  applyTheme(savedTheme);
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    localStorage.setItem('waikru-theme', theme);
+  }
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  function openTerms(e) {
+    if (e) e.preventDefault();
+    document.getElementById('termsModal').classList.add('active');
+  }
+  function closeTerms() {
+    document.getElementById('termsModal').classList.remove('active');
+  }
+  document.getElementById('termsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTerms();
+  });
+
+  const videoInput = document.getElementById('videoInput');
+  const uploadZone = document.getElementById('uploadZone');
+  const fileSelected = document.getElementById('fileSelected');
+  const fileName = document.getElementById('fileName');
+  const fileSize = document.getElementById('fileSize');
+  const btnAnalyze = document.getElementById('btnAnalyze');
+  const errorMsg = document.getElementById('errorMsg');
+
+  function formatBytes(bytes) {
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function updateAnalyzeBtn() {
+    const hasFile = videoInput.files && videoInput.files.length > 0;
+    const agreed = document.getElementById('termsCheck').checked;
+    btnAnalyze.disabled = !(hasFile && agreed);
+  }
+
+  videoInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    fileName.textContent = file.name;
+    fileSize.textContent = formatBytes(file.size);
+    fileSelected.style.display = 'block';
+    uploadZone.classList.add('has-file');
+    errorMsg.style.display = 'none';
+    updateAnalyzeBtn();
+  });
+
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      videoInput.files = dt.files;
+      videoInput.dispatchEvent(new Event('change'));
+    }
+  });
+
+  btnAnalyze.addEventListener('click', e => e.stopPropagation());
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+    document.getElementById('analyzing-overlay').classList.remove('active');
+    btnAnalyze.disabled = false;
+  }
+
+  function pollStatus(jobId) {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/status/${jobId}`);
+        const data = await res.json();
+        if (data.status === 'complete') {
+          clearInterval(interval);
+          window.location.href = `/results/${jobId}`;
+          return;
+        }
+        if (data.status === 'error') {
+          clearInterval(interval);
+          showError(data.error || 'Something went wrong. Please try again.');
+          return;
+        }
+        if (data.step) document.getElementById('analyzingStep').textContent = data.step;
+        const fill = document.getElementById('progressFill');
+        const current = parseFloat(fill.style.width) || 42;
+        if (current < 90) fill.style.width = (current + 1.5) + '%';
+        document.getElementById('progressLabel').textContent = 'Analyzing...';
+      } catch (e) {}
+    }, 2000);
+  }
+
+  async function startAnalysis() {
+    const file = videoInput.files[0];
+    if (!file) return;
+
+    btnAnalyze.disabled = true;
+    errorMsg.style.display = 'none';
+    document.getElementById('analyzing-overlay').classList.add('active');
+    document.getElementById('analyzingStep').textContent = 'Uploading video...';
+    document.getElementById('progressFill').style.width = '0%';
+
+    const formData = new FormData();
+    formData.append('video', file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload');
+    xhr.upload.addEventListener('progress', e => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 40);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressLabel').textContent = `Uploading... ${Math.round(e.loaded / e.total * 100)}%`;
+      }
+    });
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        if (data.job_id) {
+          document.getElementById('analyzingStep').textContent = 'Video uploaded. Gemini is analyzing...';
+          document.getElementById('progressFill').style.width = '42%';
+          pollStatus(data.job_id);
+        } else {
+          showError(data.error || 'Upload failed.');
+        }
+      } else {
+        let msg = 'Upload failed.';
+        try { msg = JSON.parse(xhr.responseText).error || msg; } catch(e) {}
+        showError(msg);
+      }
+    };
+    xhr.onerror = () => showError('Network error. Check your connection and try again.');
+    xhr.send(formData);
+  }
+</script>
+</body>
+</html>

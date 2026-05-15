@@ -1,0 +1,38 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# Local DB / instance data
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Sample / uploaded video files
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.avi
+*.m4v
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
