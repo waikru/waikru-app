@@ -480,6 +480,15 @@
       text-align: center;
     }
 
+    /* === Nav upgrade button === */
+    .btn-upgrade {
+      background: transparent;
+      color: var(--text-strong);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+    }
+    .btn-upgrade:hover { border-color: var(--accent); color: var(--accent); }
+
     /* === Upgrade / Pricing modal === */
     .upgrade-modal { max-width: 720px !important; }
     .pricing-grid {
@@ -999,6 +1008,7 @@
         <span id="themeIcon">🌙</span>
         <span class="toggle-label" id="themeLabel">Dark</span>
       </button>
+      <button class="btn-pill btn-upgrade" onclick="openUpgrade()">Upgrade</button>
       <a class="btn-pill" onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'});">Try it free</a>
     </div>
   </div>
