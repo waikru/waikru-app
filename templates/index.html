@@ -480,6 +480,100 @@
       text-align: center;
     }
 
+    /* === Upgrade / Pricing modal === */
+    .upgrade-modal { max-width: 720px !important; }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 600px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+    .pricing-card {
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      background: var(--bg);
+    }
+    .pricing-card.is-popular {
+      border-color: var(--accent);
+      background: var(--bg-white);
+    }
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .tier-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .tier-price {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-strong);
+    }
+    .tier-period {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .tier-perks {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .tier-perks li {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 4px 0;
+    }
+    .tier-perks li::before {
+      content: "✓ ";
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .tier-btn {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    .tier-btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .tier-btn-primary:hover { opacity: 0.9; }
+    .tier-btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1.5px solid var(--border);
+    }
+    .tier-btn-ghost:hover { border-color: var(--text-dim); }
+    .tier-btn[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
     /* === Sections === */
     .section { padding: 56px 0; background: #fafcfd; }
     .section + .section { padding-top: 0; }
@@ -1263,6 +1357,55 @@
   </div>
 </footer>
 
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal upgrade-modal">
+    <h2>You've used your free upload for today.</h2>
+    <p style="font-size:14px;color:var(--text-muted);margin:8px 0 28px;">Choose a plan to keep going. Come back tomorrow for another free upload, or upgrade now.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card tier-free">
+        <div class="tier-label">Free</div>
+        <div class="tier-price">$0</div>
+        <div class="tier-period">forever</div>
+        <ul class="tier-perks">
+          <li>1 upload per day</li>
+          <li>Full AI coaching report</li>
+          <li>No sign up needed</li>
+        </ul>
+        <button class="tier-btn tier-btn-ghost" onclick="closeUpgrade()">Stay free</button>
+      </div>
+
+      <div class="pricing-card tier-starter is-popular">
+        <div class="popular-badge">Most popular</div>
+        <div class="tier-label">Starter</div>
+        <div class="tier-price">$9</div>
+        <div class="tier-period">per month</div>
+        <ul class="tier-perks">
+          <li>10 uploads per month</li>
+          <li>Full AI coaching report</li>
+          <li>Priority processing</li>
+        </ul>
+        <button class="tier-btn tier-btn-primary" id="upgradeBtn" onclick="startCheckout()">Upgrade now</button>
+      </div>
+
+      <div class="pricing-card tier-pro">
+        <div class="tier-label">Pro</div>
+        <div class="tier-price">$19</div>
+        <div class="tier-period">per month</div>
+        <ul class="tier-perks">
+          <li>Unlimited uploads</li>
+          <li>Full AI coaching report</li>
+          <li>Multiple disciplines</li>
+        </ul>
+        <button class="tier-btn tier-btn-ghost" disabled>Coming soon</button>
+      </div>
+    </div>
+
+    <button class="modal-close" onclick="closeUpgrade()" style="margin-top:24px;">Maybe later</button>
+  </div>
+</div>
+
 <!-- TERMS MODAL -->
 <div class="modal-overlay" id="termsModal">
   <div class="modal">
@@ -1442,6 +1585,17 @@
         } else {
           showError(data.error || 'Upload failed.');
         }
+      } else if (xhr.status === 429) {
+        document.getElementById('analyzing-overlay').classList.remove('active');
+        btnAnalyze.disabled = false;
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (data.error === 'daily_limit') {
+            openUpgrade();
+            return;
+          }
+        } catch(e) {}
+        showError('Upload limit reached. Try again tomorrow.');
       } else {
         let msg = 'Upload failed.';
         try { msg = JSON.parse(xhr.responseText).error || msg; } catch(e) {}
@@ -1450,6 +1604,37 @@
     };
     xhr.onerror = () => showError('Network error. Check your connection and try again.');
     xhr.send(formData);
+  }
+
+  function openUpgrade() {
+    document.getElementById('upgradeModal').classList.add('active');
+  }
+  function closeUpgrade() {
+    document.getElementById('upgradeModal').classList.remove('active');
+  }
+  document.getElementById('upgradeModal').addEventListener('click', function(e) {
+    if (e.target === this) closeUpgrade();
+  });
+
+  async function startCheckout() {
+    const btn = document.getElementById('upgradeBtn');
+    btn.textContent = 'Redirecting...';
+    btn.disabled = true;
+    try {
+      const res = await fetch('/create-checkout-session', { method: 'POST' });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Something went wrong. Please try again.');
+        btn.textContent = 'Upgrade now';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      alert('Network error. Please try again.');
+      btn.textContent = 'Upgrade now';
+      btn.disabled = false;
+    }
   }
 </script>
 </body>

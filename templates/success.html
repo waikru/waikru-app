@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Waikru Starter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f1f5f9;
+      --bg-white: #ffffff;
+      --text-strong: #0f1419;
+      --text-muted: #4b5563;
+      --text-dim: #6b7a87;
+      --accent: #e8432d;
+      --border: #dde3ea;
+    }
+    [data-theme="dark"] {
+      --bg: #0f1419;
+      --bg-white: #1a2130;
+      --text-strong: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border: #1e2d3d;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-strong);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 56px 48px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    .checkmark {
+      width: 64px;
+      height: 64px;
+      background: #e8f5e9;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+    }
+    .checkmark svg {
+      width: 32px;
+      height: 32px;
+      stroke: #2e7d32;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .perks {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 28px 0;
+      text-align: left;
+    }
+    .perk {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-strong);
+      padding: 6px 0;
+    }
+    .perk svg {
+      width: 16px;
+      height: 16px;
+      stroke: #2e7d32;
+      flex-shrink: 0;
+    }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="checkmark">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+  </div>
+  <h1>You're in.</h1>
+  <p>Welcome to Waikru Starter. Your subscription is active.</p>
+  <div class="perks">
+    <div class="perk">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      10 video analyses per month
+    </div>
+    <div class="perk">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      Full technique breakdown with timestamps
+    </div>
+    <div class="perk">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      Powered by Google Gemini 2.5 Flash
+    </div>
+  </div>
+  <a href="/" class="btn">Upload your first video</a>
+</div>
+<script>
+  const saved = localStorage.getItem('waikru-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+</script>
+</body>
+</html>

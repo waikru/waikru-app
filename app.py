@@ -1,12 +1,14 @@
 import os
 import uuid
 import time
+import json
 import threading
 import tempfile
 from datetime import date
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
 import google.generativeai as genai
+import stripe
 
 load_dotenv()
 
@@ -21,6 +23,11 @@ SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
 SUPABASE_SECRET_KEY = os.environ.get('SUPABASE_SECRET_KEY', '')
 DAILY_FREE_LIMIT = 1  # anonymous uploads per IP per day
 
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+
 # Supabase client (optional — app works without it)
 db = None
 if SUPABASE_URL and SUPABASE_SECRET_KEY:
@@ -30,6 +37,11 @@ if SUPABASE_URL and SUPABASE_SECRET_KEY:
         print("Supabase connected.")
     except Exception as e:
         print(f"Supabase init failed: {e}")
+
+# Stripe
+if STRIPE_SECRET_KEY:
+    stripe.api_key = STRIPE_SECRET_KEY
+    print("Stripe configured.")
 
 MUAY_THAI_PROMPT = """You are an experienced Muay Thai coach with 20+ years training fighters at all levels — from beginners to competitive fighters. Analyze this training video and give specific, technical coaching feedback.
 
@@ -240,7 +252,7 @@ def upload():
     # Rate limit anonymous users
     ip = get_client_ip()
     if not check_daily_limit(ip):
-        return jsonify({'error': 'You have used your free upload for today. Come back tomorrow or sign up for more.'}), 429
+        return jsonify({'error': 'daily_limit', 'message': "You've used your free upload for today. Upgrade to Waikru Starter for more."}), 429
 
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=f'.{ext}')
     video.save(tmp.name)
@@ -277,6 +289,64 @@ def results(job_id):
     if not job:
         return "Job not found", 404
     return render_template('results.html', job_id=job_id)
+
+
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+        return jsonify({'error': 'Stripe not configured.'}), 500
+    try:
+        host = request.host_url.rstrip('/')
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{'price': STRIPE_PRICE_ID, 'quantity': 1}],
+            mode='subscription',
+            success_url=f"{host}/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{host}/",
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/success')
+def success():
+    return render_template('success.html')
+
+
+@app.route('/webhook', methods=['POST'])
+def stripe_webhook():
+    payload = request.get_data()
+    sig_header = request.headers.get('Stripe-Signature', '')
+
+    if STRIPE_WEBHOOK_SECRET:
+        try:
+            event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+        except ValueError:
+            return 'Invalid payload', 400
+        except stripe.error.SignatureVerificationError:
+            return 'Invalid signature', 400
+    else:
+        try:
+            event = json.loads(payload)
+        except Exception:
+            return 'Invalid JSON', 400
+
+    if event.get('type') == 'checkout.session.completed':
+        session_obj = event['data']['object']
+        if db:
+            try:
+                db.table('subscriptions').insert({
+                    'stripe_customer_id': session_obj.get('customer', ''),
+                    'stripe_subscription_id': session_obj.get('subscription', ''),
+                    'plan': 'starter',
+                    'status': 'active',
+                }).execute()
+                print(f"Subscription recorded: {session_obj.get('subscription')}")
+            except Exception as e:
+                print(f"Webhook Supabase error: {e}")
+
+    return '', 200
 
 
 if __name__ == '__main__':
