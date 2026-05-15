@@ -1,124 +1,143 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Waikru — Your Coaching Report</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
   <style>
     :root {
-      --bg: #0d0d0d;
-      --bg-card: #1a1a1a;
-      --bg-cta: #0f1a0f;
-      --bg-cost: #111;
-      --bg-error: #1a0a0a;
-      --text: #f0f0f0;
-      --text-body: #ccc;
-      --text-muted: #aaa;
-      --text-dim: #666;
-      --text-dimmer: #555;
-      --text-dimmest: #444;
-      --border: #1a1a1a;
-      --border-cta: #1a3a1a;
-      --border-error: #5a1a1a;
-      --spinner-track: #222;
-      --toggle-bg: #222;
-      --toggle-icon-color: #888;
+      --c-50: 250,252,253;
+      --c-100: 241,245,249;
+      --c-200: 223,228,234;
+      --c-300: 209,217,225;
+      --c-400: 169,178,188;
+      --c-500: 116,128,140;
+      --c-550: 76,88,100;
+      --c-600: 61,71,81;
+      --c-700: 40,49,58;
+      --c-800: 25,32,40;
+      --c-900: 20,26,32;
+
+      --bg: rgb(var(--c-100));
+      --bg-white: #ffffff;
+      --bg-card: #ffffff;
+      --text: rgb(var(--c-800));
+      --text-strong: rgb(var(--c-900));
+      --text-muted: rgb(var(--c-600));
+      --text-dim: rgb(var(--c-500));
+      --text-dimmer: rgb(var(--c-400));
+      --border: rgb(var(--c-200));
+      --border-strong: rgb(var(--c-300));
+      --accent: #e8432d;
+      --accent-hover: #d63a25;
+      --accent-soft: #fdece9;
+      --btn-disabled-bg: rgb(var(--c-200));
+      --btn-disabled-color: rgb(var(--c-400));
+      --spinner-track: rgb(var(--c-200));
     }
 
-    [data-theme="light"] {
-      --bg: #f5f5f0;
-      --bg-card: #ffffff;
-      --bg-cta: #f0faf0;
-      --bg-cost: #f8f8f4;
-      --bg-error: #fff0f0;
-      --text: #1a1a1a;
-      --text-body: #444;
-      --text-muted: #555;
-      --text-dim: #777;
-      --text-dimmer: #888;
-      --text-dimmest: #999;
-      --border: #e8e8e8;
-      --border-cta: #b0d8b0;
-      --border-error: #f0b0b0;
-      --spinner-track: #e0e0e0;
-      --toggle-bg: #e0e0da;
-      --toggle-icon-color: #555;
+    [data-theme="dark"] {
+      --bg: #0d0d0d;
+      --bg-white: #1a1a1a;
+      --bg-card: #141414;
+      --text: #f0f0f0;
+      --text-strong: #ffffff;
+      --text-muted: #b5bfc8;
+      --text-dim: #8a96a3;
+      --text-dimmer: #5e6873;
+      --border: #2a2a2a;
+      --border-strong: #3a3a3a;
+      --accent-soft: #2a1612;
+      --spinner-track: #222;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
       transition: background 0.2s, color 0.2s;
     }
 
-    header {
-      padding: 20px 20px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* NAV — matches homepage exactly */
+    nav {
+      background: var(--bg-white);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: var(--bg);
-      z-index: 10;
+      z-index: 50;
     }
-
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .logo {
       font-size: 22px;
       font-weight: 800;
-      color: var(--text);
-    }
-
-    .logo span { color: #e8432d; }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .back-btn {
-      font-size: 13px;
-      color: var(--text-dim);
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
       text-decoration: none;
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
     }
-
-    .theme-toggle {
-      background: var(--toggle-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 10px;
-      cursor: pointer;
-      font-size: 15px;
+    .logo span { color: var(--accent); }
+    .nav-right {
       display: flex;
       align-items: center;
-      gap: 5px;
-      transition: background 0.2s;
+      gap: 12px;
     }
-
-    .theme-toggle .toggle-label {
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .theme-toggle:hover { border-color: var(--border-strong); color: var(--text-strong); }
+    .toggle-label {
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
-      color: var(--text-dim);
     }
+    .btn-pill {
+      display: inline-block;
+      padding: 8px 18px;
+      background: var(--text-strong);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-pill:hover { background: var(--accent); }
 
+    /* MAIN CONTENT */
     main {
-      max-width: 640px;
+      max-width: 720px;
       margin: 0 auto;
-      padding: 24px 16px 64px;
+      padding: 40px 24px 80px;
     }
 
-    /* Loading state */
+    /* LOADING */
     #loading-state {
       display: flex;
       flex-direction: column;
@@ -126,186 +145,274 @@
       padding: 80px 20px;
       text-align: center;
     }
-
     .spinner {
       width: 48px;
       height: 48px;
       border: 3px solid var(--spinner-track);
-      border-top-color: #e8432d;
+      border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin-bottom: 20px;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
-
     #loading-state h2 {
       font-size: 18px;
-      color: var(--text);
+      font-weight: 700;
+      color: var(--text-strong);
       margin-bottom: 8px;
     }
-
     #loading-step {
       font-size: 14px;
       color: var(--text-dim);
       min-height: 20px;
     }
 
-    /* Error state */
+    /* ERROR */
     #error-state {
       display: none;
-      background: var(--bg-error);
-      border: 1px solid var(--border-error);
-      border-radius: 12px;
-      padding: 24px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(232,67,45,0.2);
+      border-radius: 14px;
+      padding: 32px;
       margin: 40px 0;
       text-align: center;
     }
-
     #error-state h2 {
       font-size: 18px;
-      color: #e8432d;
+      font-weight: 700;
+      color: var(--accent);
       margin-bottom: 8px;
     }
-
     #error-msg {
       font-size: 14px;
       color: var(--text-muted);
       line-height: 1.5;
     }
 
-    /* Results */
+    /* RESULTS */
     #results-state { display: none; }
 
     .report-header {
-      margin-bottom: 24px;
-      padding-bottom: 20px;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
       border-bottom: 1px solid var(--border);
     }
-
-    .report-header h1 {
-      font-size: 22px;
+    .report-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
       font-weight: 700;
-      color: var(--text);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
     }
-
+    .report-header h1 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+    }
     .report-header .subtitle {
       font-size: 13px;
-      color: var(--text-dimmer);
-      margin-top: 4px;
+      color: var(--text-dim);
+      margin-top: 6px;
     }
 
-    /* Markdown rendering */
-    .coaching-report {
-      line-height: 1.7;
-      font-size: 15px;
-      color: var(--text-body);
+    /* SHARE BAR */
+    .share-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
     }
-
-    .coaching-report h2 {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      margin: 28px 0 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .coaching-report h2:first-child { margin-top: 0; }
-
-    .coaching-report h3 {
-      font-size: 15px;
+    .share-label {
+      font-size: 12px;
       font-weight: 600;
-      color: #e8432d;
-      margin: 16px 0 8px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 4px;
     }
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg-white);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .share-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text-strong);
+    }
+    .share-btn svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .share-btn.copied {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .save-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg-white);
+      color: var(--btn-disabled-color);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: not-allowed;
+      opacity: 0.6;
+      white-space: nowrap;
+      position: relative;
+    }
+    .save-btn svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+    .save-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-strong);
+      color: var(--bg-white);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .save-btn:hover .save-tooltip { display: block; }
 
-    .coaching-report p {
-      margin-bottom: 12px;
+    /* COACHING REPORT MARKDOWN */
+    .coaching-report {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      line-height: 1.75;
+      font-size: 15px;
       color: var(--text-muted);
     }
-
+    .coaching-report h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin: 28px 0 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.2px;
+    }
+    .coaching-report h2:first-child { margin-top: 0; }
+    .coaching-report h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 18px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .coaching-report p { margin-bottom: 12px; }
     .coaching-report ul, .coaching-report ol {
       padding-left: 20px;
       margin-bottom: 14px;
     }
-
-    .coaching-report li {
-      margin-bottom: 6px;
-      color: var(--text-muted);
-    }
-
+    .coaching-report li { margin-bottom: 6px; }
     .coaching-report strong {
-      color: var(--text);
+      color: var(--text-strong);
       font-weight: 600;
     }
-
     .coaching-report em { color: var(--text-dim); }
 
-    /* CTA block */
+    /* CTA */
     .cta-block {
-      margin-top: 40px;
-      background: var(--bg-cta);
-      border: 1px solid var(--border-cta);
-      border-radius: 14px;
-      padding: 24px;
-      text-align: center;
+      margin-top: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-
     .cta-block h3 {
       font-size: 16px;
       font-weight: 700;
-      color: #4caf50;
-      margin-bottom: 8px;
+      color: var(--text-strong);
+      margin-bottom: 4px;
     }
-
     .cta-block p {
       font-size: 13px;
       color: var(--text-dim);
-      margin-bottom: 16px;
       line-height: 1.5;
     }
-
-    .btn-new {
+    .btn-accent {
       display: inline-block;
-      padding: 12px 28px;
-      background: #e8432d;
+      padding: 10px 22px;
+      background: var(--accent);
       color: #fff;
       border: none;
-      border-radius: 10px;
-      font-size: 15px;
+      border-radius: 999px;
+      font-size: 14px;
       font-weight: 600;
       text-decoration: none;
       cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+      flex-shrink: 0;
     }
+    .btn-accent:hover { background: var(--accent-hover); }
 
-    .cost-note {
-      margin-top: 24px;
-      padding: 10px 14px;
-      background: var(--bg-cost);
-      border-radius: 8px;
-      font-size: 12px;
-      color: var(--text-dimmest);
-      text-align: center;
+    @media (max-width: 600px) {
+      .nav-inner { padding: 12px 16px; }
+      main { padding: 24px 16px 60px; }
+      .coaching-report { padding: 20px 16px; }
+      .cta-block { padding: 20px; flex-direction: column; align-items: flex-start; }
+      .share-bar { gap: 6px; }
     }
-
-    .cost-note span { color: var(--text-dim); }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">wai<span>kru</span></div>
-  <div class="header-right">
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-      <span id="themeIcon">☀️</span>
-      <span class="toggle-label" id="themeLabel">Light</span>
-    </button>
-    <a href="/" class="back-btn">New Analysis</a>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">wai<span>kru</span></a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <span id="themeIcon">🌙</span>
+        <span class="toggle-label" id="themeLabel">Dark</span>
+      </button>
+      <a href="/" class="btn-pill">New Analysis</a>
+    </div>
   </div>
-</header>
+</nav>
 
 <main>
+
   <!-- Loading -->
   <div id="loading-state">
     <div class="spinner"></div>
@@ -318,33 +425,65 @@
     <h2>Something went wrong</h2>
     <p id="error-msg"></p>
     <br>
-    <a href="/" class="btn-new" style="display:inline-block;margin-top:8px;">Try Again</a>
+    <a href="/" class="btn-accent" style="display:inline-block;margin-top:8px;">Try Again</a>
   </div>
 
   <!-- Results -->
   <div id="results-state">
+
     <div class="report-header">
+      <div class="report-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Analysis complete
+      </div>
       <h1>Your Coaching Report</h1>
-      <div class="subtitle">Analyzed by Gemini 2.5 Flash · Muay Thai</div>
+      <div class="subtitle">Analyzed by Gemini 2.5 Flash &nbsp;·&nbsp; Muay Thai</div>
     </div>
 
+    <!-- Share bar -->
+    <div class="share-bar">
+      <span class="share-label">Share</span>
+
+      <button class="share-btn" id="copyBtn" onclick="copyLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy link
+      </button>
+
+      <a class="share-btn" id="emailBtn" href="#" onclick="shareEmail(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Email
+      </a>
+
+      <a class="share-btn" id="twitterBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.264 5.639L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share on X
+      </a>
+
+      <div class="save-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        Save report
+        <span class="save-tooltip">Sign in to save your reports</span>
+      </div>
+    </div>
+
+    <!-- Report content -->
     <div class="coaching-report" id="coaching-content"></div>
 
+    <!-- CTA -->
     <div class="cta-block">
-      <h3>This is a test build</h3>
-      <p>Waikru is in early development. If this feedback was useful, the product is working.</p>
-      <a href="/" class="btn-new">Analyze Another Video</a>
+      <div>
+        <h3>Want to keep improving?</h3>
+        <p>Upload another session and track your progress over time.</p>
+      </div>
+      <a href="/" class="btn-accent">Analyze Another Video</a>
     </div>
 
-    <div class="cost-note">
-      <span>API cost for this analysis: ~$0.005</span>
-    </div>
   </div>
 </main>
 
 <script>
-  // Theme management — reads saved preference so it persists from index page
-  const savedTheme = localStorage.getItem('waikru-theme') || 'dark';
+  // Theme — persists from homepage
+  const savedTheme = localStorage.getItem('waikru-theme') || 'light';
   applyTheme(savedTheme);
 
   function applyTheme(theme) {
@@ -362,6 +501,32 @@
     const current = document.documentElement.getAttribute('data-theme');
     applyTheme(current === 'dark' ? 'light' : 'dark');
   }
+
+  // Share actions
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy link`;
+      }, 2000);
+    });
+  }
+
+  function shareEmail(e) {
+    e.preventDefault();
+    const subject = encodeURIComponent('My Muay Thai coaching report from Waikru');
+    const body = encodeURIComponent('Check out my AI coaching report from Waikru: ' + window.location.href);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }
+
+  // Set Twitter share link once page loads
+  document.getElementById('twitterBtn').href =
+    'https://twitter.com/intent/tweet?text=' +
+    encodeURIComponent('Just got AI coaching feedback on my Muay Thai training from @waikruapp — specific, timestamped corrections in under 2 mins. Try it free:') +
+    '&url=' + encodeURIComponent('https://waikru.app');
 
   // Results polling
   const jobId = "{{ job_id }}";
@@ -383,26 +548,18 @@
     try {
       const res = await fetch(`/api/status/${jobId}`);
       const data = await res.json();
-
-      if (data.step) {
-        document.getElementById('loading-step').textContent = data.step;
-      }
-
+      if (data.step) document.getElementById('loading-step').textContent = data.step;
       if (data.status === 'complete') {
         clearInterval(pollInterval);
         showResults(data.result);
         return;
       }
-
       if (data.status === 'error') {
         clearInterval(pollInterval);
         showError(data.error || 'Analysis failed. Please try again.');
         return;
       }
-
-    } catch (e) {
-      // keep polling
-    }
+    } catch (e) { /* keep polling */ }
   }
 
   pollInterval = setInterval(poll, 2000);
