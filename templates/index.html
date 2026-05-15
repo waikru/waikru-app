@@ -362,12 +362,7 @@
       color: var(--text-strong);
     }
     .cloud-icon svg { width: 26px; height: 26px; stroke: currentColor; }
-    .upload-zone h2 {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text-strong);
-      margin-bottom: 20px;
-    }
+    .upload-zone h2 { margin-bottom: 20px; }
     .btn-primary {
       display: inline-block;
       padding: 12px 28px;
@@ -1042,9 +1037,9 @@
             <path d="M16 16l-4-4-4 4"></path>
           </svg>
         </div>
-        <h2>Upload your video file(s)</h2>
+        <h2 id="uploadLabel" style="display:inline-block;padding:8px 20px;background:var(--text-strong);color:#fff;border-radius:999px;font-size:14px;font-weight:600;margin-bottom:20px;cursor:pointer;">Choose a video file</h2>
         <button type="button" class="btn-primary" id="btnAnalyze" disabled onclick="startAnalysis()" style="position:relative;z-index:1;">
-          Try it free
+          Get My Coaching Report
         </button>
       </div>
     </div>
