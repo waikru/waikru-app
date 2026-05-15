@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Waikru — Your Coaching Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --bg-card: #1a1a1a;
+      --bg-cta: #0f1a0f;
+      --bg-cost: #111;
+      --bg-error: #1a0a0a;
+      --text: #f0f0f0;
+      --text-body: #ccc;
+      --text-muted: #aaa;
+      --text-dim: #666;
+      --text-dimmer: #555;
+      --text-dimmest: #444;
+      --border: #1a1a1a;
+      --border-cta: #1a3a1a;
+      --border-error: #5a1a1a;
+      --spinner-track: #222;
+      --toggle-bg: #222;
+      --toggle-icon-color: #888;
+    }
+
+    [data-theme="light"] {
+      --bg: #f5f5f0;
+      --bg-card: #ffffff;
+      --bg-cta: #f0faf0;
+      --bg-cost: #f8f8f4;
+      --bg-error: #fff0f0;
+      --text: #1a1a1a;
+      --text-body: #444;
+      --text-muted: #555;
+      --text-dim: #777;
+      --text-dimmer: #888;
+      --text-dimmest: #999;
+      --border: #e8e8e8;
+      --border-cta: #b0d8b0;
+      --border-error: #f0b0b0;
+      --spinner-track: #e0e0e0;
+      --toggle-bg: #e0e0da;
+      --toggle-icon-color: #555;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    header {
+      padding: 20px 20px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .logo span { color: #e8432d; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle .toggle-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+
+    /* Loading state */
+    #loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--spinner-track);
+      border-top-color: #e8432d;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #loading-state h2 {
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    #loading-step {
+      font-size: 14px;
+      color: var(--text-dim);
+      min-height: 20px;
+    }
+
+    /* Error state */
+    #error-state {
+      display: none;
+      background: var(--bg-error);
+      border: 1px solid var(--border-error);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 40px 0;
+      text-align: center;
+    }
+
+    #error-state h2 {
+      font-size: 18px;
+      color: #e8432d;
+      margin-bottom: 8px;
+    }
+
+    #error-msg {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Results */
+    #results-state { display: none; }
+
+    .report-header {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .report-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .report-header .subtitle {
+      font-size: 13px;
+      color: var(--text-dimmer);
+      margin-top: 4px;
+    }
+
+    /* Markdown rendering */
+    .coaching-report {
+      line-height: 1.7;
+      font-size: 15px;
+      color: var(--text-body);
+    }
+
+    .coaching-report h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 28px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .coaching-report h2:first-child { margin-top: 0; }
+
+    .coaching-report h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e8432d;
+      margin: 16px 0 8px;
+    }
+
+    .coaching-report p {
+      margin-bottom: 12px;
+      color: var(--text-muted);
+    }
+
+    .coaching-report ul, .coaching-report ol {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    .coaching-report li {
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .coaching-report strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .coaching-report em { color: var(--text-dim); }
+
+    /* CTA block */
+    .cta-block {
+      margin-top: 40px;
+      background: var(--bg-cta);
+      border: 1px solid var(--border-cta);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .cta-block h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #4caf50;
+      margin-bottom: 8px;
+    }
+
+    .cta-block p {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .btn-new {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #e8432d;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .cost-note {
+      margin-top: 24px;
+      padding: 10px 14px;
+      background: var(--bg-cost);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-dimmest);
+      text-align: center;
+    }
+
+    .cost-note span { color: var(--text-dim); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">wai<span>kru</span></div>
+  <div class="header-right">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+      <span id="themeIcon">☀️</span>
+      <span class="toggle-label" id="themeLabel">Light</span>
+    </button>
+    <a href="/" class="back-btn">New Analysis</a>
+  </div>
+</header>
+
+<main>
+  <!-- Loading -->
+  <div id="loading-state">
+    <div class="spinner"></div>
+    <h2>Analyzing your technique...</h2>
+    <div id="loading-step">Uploading video to Gemini...</div>
+  </div>
+
+  <!-- Error -->
+  <div id="error-state">
+    <h2>Something went wrong</h2>
+    <p id="error-msg"></p>
+    <br>
+    <a href="/" class="btn-new" style="display:inline-block;margin-top:8px;">Try Again</a>
+  </div>
+
+  <!-- Results -->
+  <div id="results-state">
+    <div class="report-header">
+      <h1>Your Coaching Report</h1>
+      <div class="subtitle">Analyzed by Gemini 2.5 Flash · Muay Thai</div>
+    </div>
+
+    <div class="coaching-report" id="coaching-content"></div>
+
+    <div class="cta-block">
+      <h3>This is a test build</h3>
+      <p>Waikru is in early development. If this feedback was useful, the product is working.</p>
+      <a href="/" class="btn-new">Analyze Another Video</a>
+    </div>
+
+    <div class="cost-note">
+      <span>API cost for this analysis: ~$0.005</span>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Theme management — reads saved preference so it persists from index page
+  const savedTheme = localStorage.getItem('waikru-theme') || 'dark';
+  applyTheme(savedTheme);
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    if (icon && label) {
+      icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+      label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    }
+    localStorage.setItem('waikru-theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Results polling
+  const jobId = "{{ job_id }}";
+  let pollInterval;
+
+  function showError(msg) {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'block';
+    document.getElementById('error-msg').textContent = msg;
+  }
+
+  function showResults(markdown) {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('results-state').style.display = 'block';
+    document.getElementById('coaching-content').innerHTML = marked.parse(markdown);
+  }
+
+  async function poll() {
+    try {
+      const res = await fetch(`/api/status/${jobId}`);
+      const data = await res.json();
+
+      if (data.step) {
+        document.getElementById('loading-step').textContent = data.step;
+      }
+
+      if (data.status === 'complete') {
+        clearInterval(pollInterval);
+        showResults(data.result);
+        return;
+      }
+
+      if (data.status === 'error') {
+        clearInterval(pollInterval);
+        showError(data.error || 'Analysis failed. Please try again.');
+        return;
+      }
+
+    } catch (e) {
+      // keep polling
+    }
+  }
+
+  pollInterval = setInterval(poll, 2000);
+  poll();
+</script>
+</body>
+</html>

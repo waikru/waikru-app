@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Waikru — AI Muay Thai Coach</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-section: #f7f7f5;
+      --bg-card: #ffffff;
+      --bg-upload: #fafafa;
+      --bg-overlay: rgba(255,255,255,0.96);
+      --bg-progress: #e8e8e8;
+      --text: #1a1a1a;
+      --text-body: #444;
+      --text-muted: #666;
+      --text-dim: #999;
+      --border: #e8e8e8;
+      --border-upload: #d0d0d0;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-card: 0 2px 8px rgba(0,0,0,0.06);
+      --accent: #e8432d;
+      --accent-hover: #d63a25;
+      --btn-disabled-bg: #e0e0e0;
+      --btn-disabled-color: #aaa;
+      --toggle-bg: #f0f0ee;
+      --spinner-track: #e0e0e0;
+      --nav-bg: #ffffff;
+      --nav-border: #efefef;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0d0d0d;
+      --bg-section: #111111;
+      --bg-card: #1a1a1a;
+      --bg-upload: #141414;
+      --bg-overlay: rgba(13,13,13,0.96);
+      --bg-progress: #222;
+      --text: #f0f0f0;
+      --text-body: #ccc;
+      --text-muted: #888;
+      --text-dim: #555;
+      --border: #2a2a2a;
+      --border-upload: #333;
+      --shadow: 0 2px 12px rgba(0,0,0,0.4);
+      --shadow-card: 0 2px 8px rgba(0,0,0,0.3);
+      --btn-disabled-bg: #333;
+      --btn-disabled-color: #555;
+      --toggle-bg: #222;
+      --spinner-track: #2a2a2a;
+      --nav-bg: #0d0d0d;
+      --nav-border: #1e1e1e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--nav-border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: #e8432d; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      background: var(--bg-section);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 10px;
+      letter-spacing: 0.3px;
+    }
+
+    .theme-toggle {
+      background: var(--toggle-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-muted);
+      transition: background 0.2s;
+    }
+
+    .theme-toggle .toggle-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 48px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: #e8432d;
+    }
+
+    .hero p {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* UPLOAD SECTION */
+    .upload-section {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 20px 64px;
+    }
+
+    .upload-zone {
+      background: var(--bg-upload);
+      border: 2px dashed var(--border-upload);
+      border-radius: 16px;
+      padding: 48px 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .upload-zone:hover {
+      border-color: #e8432d;
+      background: var(--bg-card);
+    }
+
+    .upload-zone.dragover {
+      border-color: #e8432d;
+      background: var(--bg-card);
+    }
+
+    .upload-zone.has-file {
+      border-color: #e8432d;
+      border-style: solid;
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon {
+      font-size: 42px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .upload-zone h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .upload-zone p {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .btn-select {
+      display: inline-block;
+      padding: 10px 24px;
+      background: #e8432d;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      pointer-events: none;
+    }
+
+    .file-selected {
+      display: none;
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .file-selected .filename {
+      font-size: 13px;
+      color: #e8432d;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-selected .filesize {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Terms */
+    .terms-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--bg-section);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .terms-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: #e8432d;
+      cursor: pointer;
+    }
+
+    .terms-row label {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .terms-row label a {
+      color: #e8432d;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .error-msg {
+      display: none;
+      margin-top: 10px;
+      color: #e8432d;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .btn-analyze {
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      padding: 15px;
+      background: #e8432d;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-analyze:hover:not(:disabled) { background: #d63a25; }
+    .btn-analyze:active:not(:disabled) { transform: scale(0.99); }
+    .btn-analyze:disabled {
+      background: var(--btn-disabled-bg);
+      color: var(--btn-disabled-color);
+      cursor: not-allowed;
+    }
+
+    .upload-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 10px;
+    }
+
+    /* WHAT YOU GET */
+    .section {
+      background: var(--bg-section);
+      padding: 64px 24px;
+    }
+
+    .section-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #e8432d;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .section-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .how-section {
+      padding: 64px 24px;
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 32px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e8432d;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+
+    .step h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* DISCIPLINES */
+    .disciplines {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .discipline-tag {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 14px;
+    }
+
+    .discipline-tag.active {
+      color: #e8432d;
+      border-color: #e8432d;
+      background: var(--bg-card);
+    }
+
+    /* CTA BOTTOM */
+    .cta-section {
+      background: var(--bg-section);
+      padding: 64px 24px;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .cta-section p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .btn-cta {
+      display: inline-block;
+      padding: 14px 32px;
+      background: #e8432d;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-cta:hover { background: #d63a25; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    footer a { color: var(--text-dim); text-decoration: underline; }
+
+    /* ANALYZING OVERLAY */
+    #analyzing-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      text-align: center;
+    }
+
+    #analyzing-overlay.active { display: flex; }
+
+    .spinner {
+      width: 52px;
+      height: 52px;
+      border: 3px solid var(--spinner-track);
+      border-top-color: #e8432d;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 24px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .analyzing-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .analyzing-step {
+      font-size: 14px;
+      color: var(--text-muted);
+      min-height: 20px;
+      margin-bottom: 20px;
+    }
+
+    .upload-progress {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .progress-bar-bg {
+      background: var(--bg-progress);
+      border-radius: 4px;
+      height: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #e8432d;
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* TERMS MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .modal h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 16px 0 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .modal p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .modal-close {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #e8432d;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Warning banner */
+    .warning-banner {
+      background: #fff8e6;
+      border: 1px solid #f0c060;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #8a6000;
+      line-height: 1.5;
+    }
+
+    [data-theme="dark"] .warning-banner {
+      background: #2a1a00;
+      border-color: #7a4500;
+      color: #e8a020;
+    }
+
+    .warning-banner strong { display: block; margin-bottom: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">wai<span>kru</span></a>
+  <div class="nav-right">
+    <span class="nav-badge">Test Build · Muay Thai</span>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <span id="themeIcon">🌙</span>
+      <span class="toggle-label" id="themeLabel">Dark</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Upload your training video.<br>Get <em>real</em> coaching feedback.</h1>
+  <p>Record 2–4 minutes of pad work, bag work, or shadow boxing. Gemini AI watches your technique and gives you the kind of specific corrections a real coach would give.</p>
+</div>
+
+<!-- UPLOAD -->
+<div class="upload-section">
+
+  {% if not api_configured %}
+  <div class="warning-banner">
+    <strong>GEMINI_API_KEY not set</strong>
+    Set the environment variable before running: <code>export GEMINI_API_KEY=your_key_here</code>
+  </div>
+  {% endif %}
+
+  <div class="upload-zone" id="uploadZone">
+    <input type="file" id="videoInput" accept="video/mp4,video/quicktime,video/avi,video/webm,video/x-matroska,.mp4,.mov,.avi,.webm,.mkv,.m4v">
+    <span class="upload-icon">☁️</span>
+    <h2>Upload your training video</h2>
+    <p>MP4, MOV, AVI — 720p recommended — Max 500MB</p>
+    <div class="btn-select">Select file</div>
+  </div>
+
+  <div class="file-selected" id="fileSelected">
+    <div class="filename" id="fileName"></div>
+    <div class="filesize" id="fileSize"></div>
+  </div>
+
+  <div class="terms-row">
+    <input type="checkbox" id="termsCheck" onchange="updateAnalyzeBtn()">
+    <label for="termsCheck">
+      I agree to the <a onclick="openTerms(event)">Terms of Use &amp; Privacy Policy</a>. My video will be processed by Google Gemini AI. Feedback is for informational purposes only, not professional coaching advice.
+    </label>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <button class="btn-analyze" id="btnAnalyze" disabled onclick="startAnalysis()">
+    Analyze My Technique — Free
+  </button>
+
+  <div class="upload-note">No account required · Results in ~60 seconds</div>
+</div>
+
+<!-- WHAT YOU GET -->
+<div class="section">
+  <div class="section-inner">
+    <div class="section-label">Your Report</div>
+    <h2 class="section-title">Feedback like a real coach would give</h2>
+    <p class="section-sub">Not generic tips — specific corrections tied to what actually happens in your video, down to the timestamp.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>Overall Assessment</h3>
+        <p>Skill level read, what stands out immediately, and a summary of your session's strengths and gaps.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🥊</div>
+        <h3>Technique Breakdown</h3>
+        <p>Guard, footwork, strikes, defense, and combinations — analyzed with specific timestamps called out.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Top 3 Corrections</h3>
+        <p>What you're doing, what it should look like, and why it matters for power, defense, and safety.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏋️</div>
+        <h3>Drills to Focus On</h3>
+        <p>1–2 targeted drills that directly address your biggest corrections. Something to take to your next session.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how-section">
+  <div class="section-inner">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Three steps to better technique</h2>
+    <p class="section-sub" style="margin-bottom:40px;">No app download. No account. Just upload and get coached.</p>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Record your training</h3>
+        <p>2–4 minutes of pad work, bag work, or shadow boxing. Phone camera is fine.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Upload and wait ~60s</h3>
+        <p>Gemini 2.5 Flash watches your full video and analyzes every technique it sees.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Get your report</h3>
+        <p>Specific feedback, timestamp references, top corrections, and drills to work on.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:40px;">
+      <div class="section-label" style="margin-bottom:12px;">Disciplines</div>
+      <div class="disciplines">
+        <span class="discipline-tag active">Muay Thai</span>
+        <span class="discipline-tag">Kickboxing — coming soon</span>
+        <span class="discipline-tag">Boxing — coming soon</span>
+        <span class="discipline-tag">BJJ — coming soon</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Try it free. No card required.</h2>
+  <p>Upload your first video and see what Gemini sees in your technique.</p>
+  <a href="#" onclick="document.getElementById('uploadZone').scrollIntoView({behavior:'smooth'});return false;" class="btn-cta">Upload a Video</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Waikru is in early development. &nbsp;·&nbsp; <a onclick="openTerms(event)" href="#">Terms &amp; Privacy</a></p>
+</footer>
+
+<!-- TERMS MODAL -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal">
+    <h2>Terms of Use &amp; Privacy Policy</h2>
+
+    <h3>Informational Use Only</h3>
+    <p>Waikru provides AI-generated coaching feedback for informational and educational purposes only. This is not a substitute for professional coaching, medical advice, or personal training. You assume full responsibility for how you use any feedback provided.</p>
+
+    <h3>Limitation of Liability</h3>
+    <p>Waikru and its operators are not liable for any injury, loss, or damage arising from your use of this service or any action taken based on feedback provided. By using Waikru you agree to hold harmless Waikru, its founders, and operators from any claims related to your training or use of this service.</p>
+
+    <h3>Data Collection &amp; Processing</h3>
+    <p>By uploading a video you consent to the following: your video is transmitted to Google Gemini AI for analysis. Google may process and temporarily retain your video in accordance with their API terms of service. Waikru deletes your video from our servers immediately after analysis is complete. We do not store, share, or sell your video to any third parties.</p>
+
+    <h3>Content You Upload</h3>
+    <p>You confirm that you own the rights to any video you upload, or have permission to use it. Do not upload videos of minors without guardian consent. Do not upload content depicting illegal activity.</p>
+
+    <h3>No Guarantee of Results</h3>
+    <p>AI-generated feedback may not be accurate, complete, or applicable to your specific situation. Always train under the supervision of a qualified coach when attempting new techniques.</p>
+
+    <p style="margin-top:14px;font-size:11px;color:var(--text-dim);">Last updated May 2026. Checking the box confirms you agree to these terms.</p>
+
+    <button class="modal-close" onclick="closeTerms()">I Understand — Close</button>
+  </div>
+</div>
+
+<!-- ANALYZING OVERLAY -->
+<div id="analyzing-overlay">
+  <div class="spinner"></div>
+  <div class="analyzing-title">Analyzing your technique...</div>
+  <div class="analyzing-step" id="analyzingStep">Uploading video...</div>
+  <div class="upload-progress">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-label" id="progressLabel"></div>
+  </div>
+</div>
+
+<script>
+  // Theme — default light
+  const savedTheme = localStorage.getItem('waikru-theme') || 'light';
+  applyTheme(savedTheme);
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    localStorage.setItem('waikru-theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Terms modal
+  function openTerms(e) {
+    e.preventDefault();
+    document.getElementById('termsModal').classList.add('active');
+  }
+
+  function closeTerms() {
+    document.getElementById('termsModal').classList.remove('active');
+  }
+
+  document.getElementById('termsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeTerms();
+  });
+
+  // Upload
+  const videoInput = document.getElementById('videoInput');
+  const uploadZone = document.getElementById('uploadZone');
+  const fileSelected = document.getElementById('fileSelected');
+  const fileName = document.getElementById('fileName');
+  const fileSize = document.getElementById('fileSize');
+  const btnAnalyze = document.getElementById('btnAnalyze');
+  const errorMsg = document.getElementById('errorMsg');
+
+  function formatBytes(bytes) {
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function updateAnalyzeBtn() {
+    const hasFile = videoInput.files && videoInput.files.length > 0;
+    const agreed = document.getElementById('termsCheck').checked;
+    btnAnalyze.disabled = !(hasFile && agreed);
+  }
+
+  videoInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    fileName.textContent = file.name;
+    fileSize.textContent = formatBytes(file.size);
+    fileSelected.style.display = 'block';
+    uploadZone.classList.add('has-file');
+    errorMsg.style.display = 'none';
+    updateAnalyzeBtn();
+  });
+
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+  });
+
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      videoInput.files = dt.files;
+      videoInput.dispatchEvent(new Event('change'));
+    }
+  });
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+    document.getElementById('analyzing-overlay').classList.remove('active');
+    btnAnalyze.disabled = false;
+  }
+
+  function pollStatus(jobId) {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/status/${jobId}`);
+        const data = await res.json();
+
+        if (data.status === 'complete') {
+          clearInterval(interval);
+          window.location.href = `/results/${jobId}`;
+          return;
+        }
+
+        if (data.status === 'error') {
+          clearInterval(interval);
+          showError(data.error || 'Something went wrong. Please try again.');
+          return;
+        }
+
+        if (data.step) document.getElementById('analyzingStep').textContent = data.step;
+
+        const fill = document.getElementById('progressFill');
+        const current = parseFloat(fill.style.width) || 42;
+        if (current < 90) fill.style.width = (current + 1.5) + '%';
+        document.getElementById('progressLabel').textContent = 'Analyzing...';
+
+      } catch (e) { /* keep polling */ }
+    }, 2000);
+  }
+
+  async function startAnalysis() {
+    const file = videoInput.files[0];
+    if (!file) return;
+
+    btnAnalyze.disabled = true;
+    errorMsg.style.display = 'none';
+    document.getElementById('analyzing-overlay').classList.add('active');
+    document.getElementById('analyzingStep').textContent = 'Uploading video...';
+    document.getElementById('progressFill').style.width = '0%';
+
+    const formData = new FormData();
+    formData.append('video', file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload');
+
+    xhr.upload.addEventListener('progress', e => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 40);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressLabel').textContent = `Uploading... ${Math.round(e.loaded / e.total * 100)}%`;
+      }
+    });
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        if (data.job_id) {
+          document.getElementById('analyzingStep').textContent = 'Video uploaded. Gemini is analyzing...';
+          document.getElementById('progressFill').style.width = '42%';
+          pollStatus(data.job_id);
+        } else {
+          showError(data.error || 'Upload failed.');
+        }
+      } else {
+        let msg = 'Upload failed.';
+        try { msg = JSON.parse(xhr.responseText).error || msg; } catch(e) {}
+        showError(msg);
+      }
+    };
+
+    xhr.onerror = () => showError('Network error. Check your connection and try again.');
+    xhr.send(formData);
+  }
+</script>
+</body>
+</html>
