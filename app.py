@@ -727,6 +727,54 @@ def view_report(analysis_id):
         return "Error loading report.", 500
 
 
+@app.route('/upgrade')
+def upgrade():
+    user = get_current_user()
+    if not STRIPE_SECRET_KEY or not STRIPE_PRICE_ID:
+        return redirect('/#pricingSection')
+    try:
+        checkout_params = {
+            'mode': 'subscription',
+            'line_items': [{'price': STRIPE_PRICE_ID, 'quantity': 1}],
+            'success_url': request.host_url.rstrip('/') + '/success',
+            'cancel_url': request.host_url.rstrip('/') + '/dashboard',
+        }
+        if user:
+            checkout_params['client_reference_id'] = user['id']
+            checkout_params['customer_email'] = user['email']
+        checkout_session = stripe.checkout.Session.create(**checkout_params)
+        return redirect(checkout_session.url)
+    except Exception as e:
+        print(f"Upgrade error: {e}")
+        return redirect('/#pricingSection')
+
+
+@app.route('/change-password', methods=['GET', 'POST'])
+def change_password():
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    if request.method == 'GET':
+        return render_template('change_password.html')
+    new_password = request.form.get('new_password', '')
+    confirm = request.form.get('confirm_password', '')
+    if not new_password or not confirm:
+        return render_template('change_password.html', error='Please fill in all fields.')
+    if new_password != confirm:
+        return render_template('change_password.html', error='Passwords do not match.')
+    if len(new_password) < 6:
+        return render_template('change_password.html', error='Password must be at least 6 characters.')
+    try:
+        access_token = session.get('access_token')
+        refresh_token = session.get('refresh_token')
+        db.auth.set_session(access_token, refresh_token)
+        db.auth.update_user({'password': new_password})
+        return render_template('change_password.html', success=True)
+    except Exception as e:
+        print(f"Password change error: {e}")
+        return render_template('change_password.html', error='Could not update password. Please try again.')
+
+
 @app.route('/portal')
 def billing_portal():
     user = get_current_user()
