@@ -67,17 +67,13 @@
       transition: background 0.2s, color 0.2s;
     }
 
-    /* NAV — matches homepage exactly */
     nav {
-      background: var(--bg-white);
-      border-bottom: 1px solid var(--border);
+      background: none;
       position: sticky;
       top: 0;
       z-index: 50;
     }
     .nav-inner {
-      max-width: 1160px;
-      margin: 0 auto;
       padding: 14px 32px;
       display: flex;
       align-items: center;
@@ -116,8 +112,10 @@
       text-transform: uppercase;
     }
     .btn-pill {
-      display: inline-block;
-      padding: 8px 18px;
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      min-height: 48px;
       background: var(--text-strong);
       color: #fff;
       border: none;
@@ -129,6 +127,24 @@
       transition: background 0.15s;
     }
     .btn-pill:hover { background: var(--accent); }
+    .btn-accent {
+      min-height: 48px;
+    }
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
 
     /* MAIN CONTENT */
     main {
@@ -402,10 +418,6 @@
   <div class="nav-inner">
     <a href="/" class="logo">wai<span>kru</span></a>
     <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-        <span id="themeIcon">🌙</span>
-        <span class="toggle-label" id="themeLabel">Dark</span>
-      </button>
       <a href="/" class="btn-pill">New Analysis</a>
     </div>
   </div>
@@ -417,7 +429,7 @@
   <div id="loading-state">
     <div class="spinner"></div>
     <h2>Analyzing your technique...</h2>
-    <div id="loading-step">Uploading video to Gemini...</div>
+    <div id="loading-step">Uploading your video...</div>
   </div>
 
   <!-- Error -->
@@ -437,7 +449,7 @@
         Analysis complete
       </div>
       <h1>Your Coaching Report</h1>
-      <div class="subtitle">Analyzed by Gemini 2.5 Flash &nbsp;·&nbsp; Muay Thai</div>
+      <div class="subtitle">Muay Thai &nbsp;·&nbsp; AI Analysis</div>
     </div>
 
     <!-- Share bar -->
@@ -480,6 +492,14 @@
 
   </div>
 </main>
+
+<footer style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:24px 32px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);">
+  <span>&copy; 2026 Waikru</span>
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span id="themeIcon">🌙</span>
+    <span id="themeLabel">Dark</span>
+  </button>
+</footer>
 
 <script>
   // Theme — persists from homepage
