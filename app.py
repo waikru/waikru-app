@@ -612,21 +612,18 @@ def auth_signup():
 
 @app.route('/auth/google')
 def auth_google():
-    if not db:
+    if not SUPABASE_URL:
         return redirect('/login?error=auth_not_configured')
-    try:
-        callback_url = request.host_url.rstrip('/') + '/auth/callback'
-        res = db.auth.sign_in_with_oauth({
-            'provider': 'google',
-            'options': {'redirect_to': callback_url}
-        })
-        oauth_url = res.url if hasattr(res, 'url') else res.get('url', '')
-        if oauth_url:
-            return redirect(oauth_url)
-        return redirect('/login?error=google_failed')
-    except Exception as e:
-        print(f"Google OAuth error: {e}")
-        return redirect('/login?error=google_failed')
+    import urllib.parse
+    callback_url = request.host_url.rstrip('/') + '/auth/callback'
+    # Build the OAuth URL directly using implicit flow so tokens come back
+    # in the URL hash where our callback page can read them
+    oauth_url = (
+        f"{SUPABASE_URL}/auth/v1/authorize"
+        f"?provider=google"
+        f"&redirect_to={urllib.parse.quote(callback_url, safe='')}"
+    )
+    return redirect(oauth_url)
 
 
 @app.route('/auth/callback')
