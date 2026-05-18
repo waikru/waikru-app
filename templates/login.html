@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in — Waikru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --bg-white: #ffffff;
+      --bg-zone: #fafcfd;
+      --text: #19202a;
+      --text-strong: #141a20;
+      --text-muted: #3d4751;
+      --text-dim: #748090;
+      --border: #dfe4ea;
+      --border-strong: #d1d9e1;
+      --accent: #e8432d;
+      --accent-hover: #d63a25;
+    }
+    [data-theme="dark"] {
+      --bg: #0d0d0d;
+      --bg-white: #1a1a1a;
+      --bg-zone: #141414;
+      --text: #f0f0f0;
+      --text-strong: #ffffff;
+      --text-muted: #b5bfc8;
+      --text-dim: #8a96a3;
+      --border: #2a2a2a;
+      --border-strong: #3a3a3a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-strong);
+      text-decoration: none;
+      margin-bottom: 32px;
+      display: block;
+      text-align: center;
+    }
+    .logo span { color: var(--accent); }
+    .card {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .card h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-strong);
+      letter-spacing: -0.4px;
+      margin-bottom: 6px;
+    }
+    .card .sub {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 28px;
+    }
+    .error-banner {
+      background: #fef2f0;
+      border: 1px solid #fca99a;
+      color: #b91c0c;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+    [data-theme="dark"] .error-banner {
+      background: #2a1010;
+      border-color: #7a2020;
+      color: #f87171;
+    }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-dim);
+      margin-bottom: 7px;
+    }
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--bg-zone);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      min-height: 48px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+      margin-top: 4px;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 22px 0;
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .btn-google {
+      width: 100%;
+      padding: 12px;
+      min-height: 48px;
+      background: var(--bg-white);
+      color: var(--text-strong);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      transition: border-color 0.15s;
+    }
+    .btn-google:hover { border-color: var(--text-dim); }
+    .btn-google svg { flex-shrink: 0; }
+    .footer-link {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .footer-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .footer-link a:hover { text-decoration: underline; }
+    .back-home {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    .back-home a {
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+    .back-home a:hover { color: var(--text-strong); }
+  </style>
+</head>
+<body>
+
+<a href="/" class="logo">wai<span>kru</span></a>
+
+<div class="card">
+  <h1>Welcome back</h1>
+  <p class="sub">Sign in to your account</p>
+
+  {% if error %}
+  <div class="error-banner">{{ error }}</div>
+  {% endif %}
+
+  <a class="btn-google" href="/auth/google">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+    </svg>
+    Continue with Google
+  </a>
+
+  <div class="divider">or</div>
+
+  <form method="POST" action="/auth/login">
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn-primary">Sign in</button>
+  </form>
+</div>
+
+<p class="footer-link">
+  Don't have an account? <a href="/signup">Join free</a>
+</p>
+<p class="back-home"><a href="/">← Back to home</a></p>
+
+<script>
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    const saved = localStorage.getItem('waikru-theme');
+    document.documentElement.setAttribute('data-theme', saved || 'dark');
+  } else {
+    const saved = localStorage.getItem('waikru-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  }
+</script>
+</body>
+</html>

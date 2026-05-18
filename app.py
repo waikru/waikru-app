@@ -4,9 +4,10 @@ import time
 import json
 import threading
 import tempfile
+import secrets
 from datetime import date
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import google.generativeai as genai
 import stripe
 
@@ -14,6 +15,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max upload
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(32))
 
 # In-memory job store
 jobs = {}
@@ -37,6 +39,33 @@ if SUPABASE_URL and SUPABASE_SECRET_KEY:
         print("Supabase connected.")
     except Exception as e:
         print(f"Supabase init failed: {e}")
+
+
+# ---------- Auth helpers ----------
+
+@app.context_processor
+def inject_user():
+    uid = session.get('user_id')
+    if uid:
+        return {'current_user': {'id': uid, 'email': session.get('user_email', '')}}
+    return {'current_user': None}
+
+
+def get_current_user():
+    uid = session.get('user_id')
+    if uid:
+        return {'id': uid, 'email': session.get('user_email', '')}
+    return None
+
+
+def user_has_subscription(user_id):
+    if not db or not user_id:
+        return False
+    try:
+        res = db.table('subscriptions').select('id').eq('user_id', user_id).eq('status', 'active').limit(1).execute()
+        return bool(res.data)
+    except Exception:
+        return False
 
 # Stripe
 if STRIPE_SECRET_KEY:
@@ -246,11 +275,11 @@ def increment_daily_usage(ip_address):
         print(f"Increment usage error: {e}")
 
 
-def log_analysis_start(job_id, ip_address, video_filename, video_size_mb, discipline='muay_thai'):
+def log_analysis_start(job_id, ip_address, video_filename, video_size_mb, discipline='muay_thai', user_id=None):
     if not db:
         return
     try:
-        db.table('analyses').insert({
+        row = {
             'id': job_id,
             'ip_address': ip_address,
             'status': 'processing',
@@ -258,7 +287,10 @@ def log_analysis_start(job_id, ip_address, video_filename, video_size_mb, discip
             'video_size_mb': round(video_size_mb, 2),
             'gemini_model': 'gemini-2.5-flash',
             'discipline': discipline,
-        }).execute()
+        }
+        if user_id:
+            row['user_id'] = user_id
+        db.table('analyses').insert(row).execute()
     except Exception as e:
         print(f"Log start error: {e}")
 
@@ -385,9 +417,12 @@ def upload():
     }
     mime_type = mime_map.get(ext, 'video/mp4')
 
-    # Rate limit anonymous users
+    # Rate limit — skip for logged-in subscribers
     ip = get_client_ip()
-    if not check_daily_limit(ip):
+    user = get_current_user()
+    is_subscriber = user_has_subscription(user['id']) if user else False
+
+    if not is_subscriber and not check_daily_limit(ip):
         return jsonify({'error': 'daily_limit', 'message': "You've used your free upload for today. Upgrade to Waikru Starter for more."}), 429
 
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=f'.{ext}')
@@ -407,8 +442,9 @@ def upload():
         'discipline_label': DISCIPLINE_LABELS.get(discipline, 'Muay Thai'),
     }
 
-    log_analysis_start(job_id, ip, video.filename, video_size_mb, discipline)
-    increment_daily_usage(ip)
+    log_analysis_start(job_id, ip, video.filename, video_size_mb, discipline, user_id=user['id'] if user else None)
+    if not is_subscriber:
+        increment_daily_usage(ip)
 
     t = threading.Thread(
         target=analyze_video,
@@ -442,14 +478,19 @@ def create_checkout_session():
         return jsonify({'error': 'Stripe not configured.'}), 500
     try:
         host = request.host_url.rstrip('/')
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{'price': STRIPE_PRICE_ID, 'quantity': 1}],
-            mode='subscription',
-            success_url=f"{host}/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{host}/",
-        )
-        return jsonify({'url': session.url})
+        user = get_current_user()
+        checkout_params = {
+            'payment_method_types': ['card'],
+            'line_items': [{'price': STRIPE_PRICE_ID, 'quantity': 1}],
+            'mode': 'subscription',
+            'success_url': f"{host}/success?session_id={{CHECKOUT_SESSION_ID}}",
+            'cancel_url': f"{host}/",
+        }
+        if user:
+            checkout_params['client_reference_id'] = user['id']
+            checkout_params['customer_email'] = user['email']
+        checkout_session = stripe.checkout.Session.create(**checkout_params)
+        return jsonify({'url': checkout_session.url})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -481,17 +522,239 @@ def stripe_webhook():
         session_obj = event['data']['object']
         if db:
             try:
-                db.table('subscriptions').insert({
+                row = {
                     'stripe_customer_id': session_obj.get('customer', ''),
                     'stripe_subscription_id': session_obj.get('subscription', ''),
                     'plan': 'starter',
                     'status': 'active',
-                }).execute()
+                    'user_email': session_obj.get('customer_email', ''),
+                }
+                ref_id = session_obj.get('client_reference_id')
+                if ref_id:
+                    row['user_id'] = ref_id
+                db.table('subscriptions').insert(row).execute()
                 print(f"Subscription recorded: {session_obj.get('subscription')}")
             except Exception as e:
                 print(f"Webhook Supabase error: {e}")
 
     return '', 200
+
+
+# ---------- Auth routes ----------
+
+@app.route('/login')
+def login_page():
+    if session.get('user_id'):
+        return redirect('/dashboard')
+    error = request.args.get('error')
+    return render_template('login.html', error=error)
+
+
+@app.route('/signup')
+def signup_page():
+    if session.get('user_id'):
+        return redirect('/dashboard')
+    error = request.args.get('error')
+    return render_template('signup.html', error=error)
+
+
+@app.route('/auth/login', methods=['POST'])
+def auth_login():
+    if not db:
+        return render_template('login.html', error='Auth not configured.')
+    email = request.form.get('email', '').strip()
+    password = request.form.get('password', '')
+    if not email or not password:
+        return render_template('login.html', error='Please enter your email and password.')
+    try:
+        res = db.auth.sign_in_with_password({'email': email, 'password': password})
+        session['user_id'] = res.user.id
+        session['user_email'] = res.user.email
+        session['access_token'] = res.session.access_token
+        session['refresh_token'] = res.session.refresh_token
+        return redirect('/dashboard')
+    except Exception as e:
+        return render_template('login.html', error='Invalid email or password.')
+
+
+@app.route('/auth/signup', methods=['POST'])
+def auth_signup():
+    if not db:
+        return render_template('signup.html', error='Auth not configured.')
+    email = request.form.get('email', '').strip()
+    password = request.form.get('password', '')
+    confirm = request.form.get('confirm_password', '')
+    if not email or not password:
+        return render_template('signup.html', error='Please fill in all fields.')
+    if password != confirm:
+        return render_template('signup.html', error='Passwords do not match.')
+    if len(password) < 6:
+        return render_template('signup.html', error='Password must be at least 6 characters.')
+    try:
+        res = db.auth.sign_up({'email': email, 'password': password})
+        if res.user:
+            if res.session:
+                session['user_id'] = res.user.id
+                session['user_email'] = res.user.email
+                session['access_token'] = res.session.access_token
+                session['refresh_token'] = res.session.refresh_token
+                return redirect('/dashboard')
+            else:
+                # Email confirmation required
+                return render_template('signup.html', confirm_email=True, email=email)
+        return render_template('signup.html', error='Signup failed. Please try again.')
+    except Exception as e:
+        err = str(e)
+        if 'already registered' in err.lower() or 'already exists' in err.lower():
+            return render_template('signup.html', error='An account with that email already exists. Try logging in.')
+        return render_template('signup.html', error='Signup failed. Please try again.')
+
+
+@app.route('/auth/google')
+def auth_google():
+    if not db:
+        return redirect('/login?error=auth_not_configured')
+    try:
+        callback_url = request.host_url.rstrip('/') + '/auth/callback'
+        res = db.auth.sign_in_with_oauth({
+            'provider': 'google',
+            'options': {'redirect_to': callback_url}
+        })
+        oauth_url = res.url if hasattr(res, 'url') else res.get('url', '')
+        if oauth_url:
+            return redirect(oauth_url)
+        return redirect('/login?error=google_failed')
+    except Exception as e:
+        print(f"Google OAuth error: {e}")
+        return redirect('/login?error=google_failed')
+
+
+@app.route('/auth/callback')
+def auth_callback():
+    return render_template('auth_callback.html')
+
+
+@app.route('/auth/session', methods=['POST'])
+def auth_session():
+    data = request.json or {}
+    access_token = data.get('access_token')
+    refresh_token = data.get('refresh_token', '')
+    if not access_token:
+        return jsonify({'ok': False, 'error': 'No token provided'}), 400
+    try:
+        user_resp = db.auth.get_user(access_token)
+        session['user_id'] = user_resp.user.id
+        session['user_email'] = user_resp.user.email
+        session['access_token'] = access_token
+        session['refresh_token'] = refresh_token
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 400
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+
+@app.route('/dashboard')
+def dashboard():
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+
+    analyses = []
+    subscription = None
+
+    if db:
+        try:
+            res = db.table('analyses') \
+                .select('id, discipline, status, created_at, video_filename') \
+                .eq('user_id', user['id']) \
+                .order('created_at', desc=True) \
+                .limit(20) \
+                .execute()
+            analyses = res.data or []
+        except Exception as e:
+            print(f"Dashboard analyses error: {e}")
+
+        try:
+            res = db.table('subscriptions') \
+                .select('plan, status, stripe_customer_id') \
+                .eq('user_id', user['id']) \
+                .eq('status', 'active') \
+                .limit(1) \
+                .execute()
+            if res.data:
+                subscription = res.data[0]
+            else:
+                # Fallback: try matching by email
+                res2 = db.table('subscriptions') \
+                    .select('plan, status, stripe_customer_id') \
+                    .eq('user_email', user['email']) \
+                    .eq('status', 'active') \
+                    .limit(1) \
+                    .execute()
+                if res2.data:
+                    subscription = res2.data[0]
+        except Exception as e:
+            print(f"Dashboard subscription error: {e}")
+
+    return render_template('dashboard.html', user=user, analyses=analyses, subscription=subscription)
+
+
+@app.route('/report/<analysis_id>')
+def view_report(analysis_id):
+    user = get_current_user()
+    if not user:
+        return redirect('/login')
+    if not db:
+        return "Report not available.", 404
+    try:
+        res = db.table('analyses') \
+            .select('id, discipline, result_markdown, created_at, status') \
+            .eq('id', analysis_id) \
+            .eq('user_id', user['id']) \
+            .limit(1) \
+            .execute()
+        if not res.data:
+            return "Report not found.", 404
+        report = res.data[0]
+        if report['status'] != 'complete' or not report.get('result_markdown'):
+            return "This report is not available.", 404
+        discipline_label = DISCIPLINE_LABELS.get(report.get('discipline', 'muay_thai'), 'Muay Thai')
+        return render_template('report.html', report=report, discipline_label=discipline_label)
+    except Exception as e:
+        print(f"View report error: {e}")
+        return "Error loading report.", 500
+
+
+@app.route('/portal')
+def billing_portal():
+    user = get_current_user()
+    if not user or not STRIPE_SECRET_KEY:
+        return redirect('/dashboard')
+    if not db:
+        return redirect('/dashboard')
+    try:
+        res = db.table('subscriptions') \
+            .select('stripe_customer_id') \
+            .eq('user_id', user['id']) \
+            .eq('status', 'active') \
+            .limit(1) \
+            .execute()
+        if not res.data:
+            return redirect('/dashboard')
+        customer_id = res.data[0]['stripe_customer_id']
+        portal = stripe.billing_portal.Session.create(
+            customer=customer_id,
+            return_url=request.host_url.rstrip('/') + '/dashboard',
+        )
+        return redirect(portal.url)
+    except Exception as e:
+        print(f"Portal error: {e}")
+        return redirect('/dashboard')
 
 
 if __name__ == '__main__':

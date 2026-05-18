@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signing in — Waikru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap">
+  <style>
+    :root { --accent: #e8432d; --bg: #f1f5f9; --text: #19202a; --text-dim: #748090; }
+    [data-theme="dark"] { --bg: #0d0d0d; --text: #f0f0f0; --text-dim: #8a96a3; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter Tight', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(232,67,45,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { font-size: 14px; color: var(--text-dim); }
+    .error { color: #b91c0c; font-size: 14px; display: none; text-align: center; max-width: 300px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <a href="/" class="logo">wai<span>kru</span></a>
+  <div class="spinner" id="spinner"></div>
+  <p id="msg">Signing you in...</p>
+  <p class="error" id="errorMsg"></p>
+
+<script>
+  (function() {
+    const saved = localStorage.getItem('waikru-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  })();
+
+  // Read tokens from URL hash (Supabase implicit OAuth flow)
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  const access_token = params.get('access_token');
+  const refresh_token = params.get('refresh_token');
+
+  function showError(msg) {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('msg').style.display = 'none';
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg + ' Redirecting to login...';
+    el.style.display = 'block';
+    setTimeout(() => window.location.href = '/login?error=auth_failed', 2500);
+  }
+
+  if (!access_token) {
+    showError('Could not complete sign in.');
+  } else {
+    fetch('/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token, refresh_token })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        window.location.href = '/dashboard';
+      } else {
+        showError('Sign in failed: ' + (data.error || 'unknown error'));
+      }
+    })
+    .catch(() => showError('Network error. Please try again.'));
+  }
+</script>
+</body>
+</html>

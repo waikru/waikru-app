@@ -1121,6 +1121,13 @@
   <a onclick="scrollTo('pricingSection');closeMobileMenu()">Pricing</a>
   <a onclick="scrollTo('faqSection');closeMobileMenu()">FAQ</a>
   <a href="/about" onclick="closeMobileMenu()">About</a>
+  {% if current_user %}
+  <a href="/dashboard" onclick="closeMobileMenu()">Dashboard</a>
+  <a href="/logout">Log out</a>
+  {% else %}
+  <a href="/login" onclick="closeMobileMenu()">Log in</a>
+  <a href="/signup" onclick="closeMobileMenu()">Join free</a>
+  {% endif %}
 </div>
 
 <!-- NAV -->
@@ -1135,8 +1142,13 @@
       <a href="/about">About</a>
     </div>
     <div class="nav-right">
-      <a class="btn-pill-outline" href="/login">Log in</a>
-      <a class="btn-pill" href="/signup">Join free</a>
+      {% if current_user %}
+        <a class="btn-pill-outline" href="/dashboard">Dashboard</a>
+        <a href="/logout" style="font-size:13px;font-weight:500;color:var(--text-muted);text-decoration:none;">Log out</a>
+      {% else %}
+        <a class="btn-pill-outline" href="/login">Log in</a>
+        <a class="btn-pill" href="/signup">Join free</a>
+      {% endif %}
       <button class="hamburger" onclick="openMobileMenu()" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
