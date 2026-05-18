@@ -449,7 +449,7 @@
         Analysis complete
       </div>
       <h1>Your Coaching Report</h1>
-      <div class="subtitle">Muay Thai &nbsp;·&nbsp; AI Analysis</div>
+      <div class="subtitle" id="reportSubtitle">AI Analysis</div>
     </div>
 
     <!-- Share bar -->
@@ -537,7 +537,7 @@
 
   function shareEmail(e) {
     e.preventDefault();
-    const subject = encodeURIComponent('My Muay Thai coaching report from Waikru');
+    const subject = encodeURIComponent('My coaching report from Waikru');
     const body = encodeURIComponent('Check out my AI coaching report from Waikru: ' + window.location.href);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
@@ -545,7 +545,7 @@
   // Set Twitter share link once page loads
   document.getElementById('twitterBtn').href =
     'https://twitter.com/intent/tweet?text=' +
-    encodeURIComponent('Just got AI coaching feedback on my Muay Thai training from @waikruapp — specific, timestamped corrections in under 2 mins. Try it free:') +
+    encodeURIComponent('Just got AI coaching feedback on my training from @waikruapp — specific, timestamped corrections in under 2 mins. Try it free:') +
     '&url=' + encodeURIComponent('https://waikru.app');
 
   // Results polling
@@ -569,6 +569,9 @@
       const res = await fetch(`/api/status/${jobId}`);
       const data = await res.json();
       if (data.step) document.getElementById('loading-step').textContent = data.step;
+      if (data.discipline_label) {
+        document.getElementById('reportSubtitle').textContent = data.discipline_label + ' \u00b7 AI Analysis';
+      }
       if (data.status === 'complete') {
         clearInterval(pollInterval);
         showResults(data.result);

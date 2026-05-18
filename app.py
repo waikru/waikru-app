@@ -78,6 +78,136 @@ What you see → What it should look like → Why it matters
 
 Be direct and technical. Talk like a real coach — not a chatbot. Reference specific things you actually see. If you cannot clearly see the technique due to video quality or angle, say so."""
 
+BOXING_PROMPT = """You are an experienced boxing coach with 20+ years working with fighters from grassroots to professional level. Analyze this training video and give specific, technical coaching feedback.
+
+Structure your response exactly like this:
+
+## Overall Assessment
+2-3 sentences on what you observe — skill level, energy, style, what immediately stands out.
+
+## What's Working
+Specific positives tied to what you actually see. Be concrete — name the punch, the moment, the detail that's landing well.
+
+## Technique Breakdown
+Go through what you observe and give technical notes on each:
+- Stance and guard (hand height, elbow position, chin tuck, weight distribution)
+- Footwork (in-and-out movement, lateral steps, pivots, balance on the exit)
+- Jab (extension, shoulder roll, snap back)
+- Cross (hip rotation, shoulder drive, guard hand position)
+- Hook (elbow angle, hip turn, target level)
+- Uppercut (knee bend, shoulder dip, guard position)
+- Head movement (slipping, rolling, bobbing — what you see and when it's used)
+- Defense (parrying, blocking, covering — what's there and what's missing)
+- Combination rhythm and flow
+
+## Top 3 Corrections
+The three most impactful technical fixes, each explained clearly:
+
+**1. [Issue]**
+What you see → What it should look like → Why it matters
+
+**2. [Issue]**
+What you see → What it should look like → Why it matters
+
+**3. [Issue]**
+What you see → What it should look like → Why it matters
+
+## Drills to Focus On
+1-2 specific drills or exercises that directly target the corrections above.
+
+Be direct. Talk like a corner coach, not a manual. Reference the exact punches and moments you see. If video quality or angle limits what you can assess, say so clearly."""
+
+MMA_PROMPT = """You are an experienced MMA coach with 20+ years working with fighters across striking, wrestling, and grappling disciplines. Analyze this training video and give specific, technical coaching feedback.
+
+Structure your response exactly like this:
+
+## Overall Assessment
+2-3 sentences on what you observe — skill level, what art they seem most comfortable in, overall athleticism and energy.
+
+## What's Working
+Specific positives tied to what you actually see in the footage. Be concrete and name the technique or moment.
+
+## Technique Breakdown
+Analyze whatever is visible in the video. Cover what applies:
+- Stance and base (guard position, weight distribution, stance width)
+- Striking (punches, kicks, knees, elbows — mechanics and timing)
+- Head movement and defensive striking
+- Clinch and dirty boxing (control, strikes in close, knee work)
+- Takedown offense or defense (if visible — level changes, shot mechanics, sprawl timing)
+- Ground position and control (if visible — top pressure, posture in guard, passing attempts)
+- Transitions between ranges (how they move between striking, clinch, and ground)
+- Combination rhythm and range management
+
+## Top 3 Corrections
+The three most impactful fixes, each explained clearly:
+
+**1. [Issue]**
+What you see → What it should look like → Why it matters in a fight context
+
+**2. [Issue]**
+What you see → What it should look like → Why it matters
+
+**3. [Issue]**
+What you see → What it should look like → Why it matters
+
+## Drills to Focus On
+1-2 specific drills or exercises that target the corrections above. Be practical — name the drill.
+
+Be direct and technical. Talk like a coach who knows all three ranges. Reference what you specifically see happening. If the video angle or quality limits your view, say so clearly."""
+
+BJJ_PROMPT = """You are an experienced Brazilian jiu-jitsu coach with 20+ years on the mat, working with students from white belt to black belt. Analyze this training video and give specific, technical coaching feedback.
+
+Note: Ground grappling is harder to read from typical phone angles than stand-up striking. Be honest about what you can and cannot assess clearly from the footage available.
+
+Structure your response exactly like this:
+
+## Overall Assessment
+2-3 sentences on what you observe — the training context (drilling, rolling, positional), approximate skill level, energy and intention on the mat.
+
+## What's Working
+Specific positives tied to what you actually see. Name the position, the movement, or the moment that stands out.
+
+## Technique Breakdown
+Go through what is visible and give technical notes on each:
+- Base and posture (especially in top positions — how they carry their weight)
+- Guard work (type of guard used, grips, hip activity, guard retention)
+- Passing attempts (pressure, direction, weight distribution, timing)
+- Submission setups (entries, control before the finish attempt, finishing mechanics)
+- Sweeps and reversals (timing, grip breaks, hip movement)
+- Escapes and recovery (frames, hip escape, bridge mechanics)
+- Transitions between positions
+
+## Top 3 Corrections
+The three most impactful technical fixes, each explained clearly:
+
+**1. [Issue]**
+What you see → What it should look like → Why it matters on the mat
+
+**2. [Issue]**
+What you see → What it should look like → Why it matters
+
+**3. [Issue]**
+What you see → What it should look like → Why it matters
+
+## Drills to Focus On
+1-2 specific positional drills or solo movement exercises that directly address the corrections above.
+
+Be direct and technical. Talk like a coach who has rolled thousands of rounds. Reference the exact positions and moments you observe. If the camera angle makes a specific detail hard to read, say so and explain what angle would be more useful."""
+
+DISCIPLINE_PROMPTS = {
+    'muay_thai': MUAY_THAI_PROMPT,
+    'boxing': BOXING_PROMPT,
+    'mma': MMA_PROMPT,
+    'bjj': BJJ_PROMPT,
+}
+
+DISCIPLINE_LABELS = {
+    'muay_thai': 'Muay Thai',
+    'boxing': 'Boxing',
+    'mma': 'MMA',
+    'bjj': 'Jiu-Jitsu',
+}
+
 
 # ---------- Supabase helpers ----------
 
@@ -116,7 +246,7 @@ def increment_daily_usage(ip_address):
         print(f"Increment usage error: {e}")
 
 
-def log_analysis_start(job_id, ip_address, video_filename, video_size_mb):
+def log_analysis_start(job_id, ip_address, video_filename, video_size_mb, discipline='muay_thai'):
     if not db:
         return
     try:
@@ -127,7 +257,7 @@ def log_analysis_start(job_id, ip_address, video_filename, video_size_mb):
             'video_filename': video_filename,
             'video_size_mb': round(video_size_mb, 2),
             'gemini_model': 'gemini-2.5-flash',
-            'discipline': 'muay_thai',
+            'discipline': discipline,
         }).execute()
     except Exception as e:
         print(f"Log start error: {e}")
@@ -160,8 +290,9 @@ def log_analysis_error(job_id, error_message):
 
 # ---------- Video analysis ----------
 
-def analyze_video(job_id, video_path, mime_type, ip_address, video_filename, video_size_mb):
+def analyze_video(job_id, video_path, mime_type, ip_address, video_filename, video_size_mb, discipline='muay_thai'):
     start_time = time.time()
+    prompt = DISCIPLINE_PROMPTS.get(discipline, MUAY_THAI_PROMPT)
     try:
         if not GEMINI_API_KEY:
             raise ValueError('GEMINI_API_KEY not set.')
@@ -169,12 +300,12 @@ def analyze_video(job_id, video_path, mime_type, ip_address, video_filename, vid
         genai.configure(api_key=GEMINI_API_KEY)
 
         jobs[job_id]['status'] = 'uploading'
-        jobs[job_id]['step'] = 'Uploading video to Gemini...'
+        jobs[job_id]['step'] = 'Uploading your video...'
 
         video_file = genai.upload_file(video_path, mime_type=mime_type)
 
         jobs[job_id]['status'] = 'processing'
-        jobs[job_id]['step'] = 'Gemini is processing your video...'
+        jobs[job_id]['step'] = 'Processing your video...'
 
         poll_count = 0
         while video_file.state.name == "PROCESSING":
@@ -185,13 +316,13 @@ def analyze_video(job_id, video_path, mime_type, ip_address, video_filename, vid
                 raise TimeoutError("Video processing timed out")
 
         if video_file.state.name == "FAILED":
-            raise ValueError("Gemini could not process this video file. Try a different format (MP4 works best).")
+            raise ValueError("Could not process this video file. Try a different format (MP4 works best).")
 
         jobs[job_id]['step'] = 'Analyzing your technique...'
 
         model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(
-            [video_file, MUAY_THAI_PROMPT],
+            [video_file, prompt],
             generation_config=genai.GenerationConfig(
                 temperature=0.4,
                 max_output_tokens=8192,
@@ -263,16 +394,25 @@ def upload():
     video.save(tmp.name)
     tmp.close()
 
+    discipline = request.form.get('discipline', 'muay_thai')
+    if discipline not in DISCIPLINE_PROMPTS:
+        discipline = 'muay_thai'
+
     video_size_mb = os.path.getsize(tmp.name) / (1024 * 1024)
     job_id = str(uuid.uuid4())
-    jobs[job_id] = {'status': 'queued', 'step': 'Starting...'}
+    jobs[job_id] = {
+        'status': 'queued',
+        'step': 'Starting...',
+        'discipline': discipline,
+        'discipline_label': DISCIPLINE_LABELS.get(discipline, 'Muay Thai'),
+    }
 
-    log_analysis_start(job_id, ip, video.filename, video_size_mb)
+    log_analysis_start(job_id, ip, video.filename, video_size_mb, discipline)
     increment_daily_usage(ip)
 
     t = threading.Thread(
         target=analyze_video,
-        args=(job_id, tmp.name, mime_type, ip, video.filename, video_size_mb),
+        args=(job_id, tmp.name, mime_type, ip, video.filename, video_size_mb, discipline),
         daemon=True
     )
     t.start()

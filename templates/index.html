@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Waikru — AI Muay Thai Coach | Free Video Technique Analysis</title>
-  <meta name="description" content="Upload a training video and get AI Muay Thai coaching feedback in under two minutes. Specific, timestamped corrections on pad work, bag work, and shadow boxing — powered by Google Gemini. Free during test build.">
-  <meta name="keywords" content="AI Muay Thai coach, Muay Thai video analysis, AI coaching feedback, pad work analysis, shadow boxing technique, bag work feedback, AI sports coach, Muay Thai technique review">
+  <title>Waikru — AI Combat Sports Coach | Free Video Technique Analysis</title>
+  <meta name="description" content="Upload a training video and get specific AI coaching feedback in minutes. Muay Thai, boxing, MMA, or jiu-jitsu — technique corrections tied to what the AI actually sees. Free to start.">
+  <meta name="keywords" content="AI fighting coach, Muay Thai video analysis, boxing technique feedback, MMA coaching, jiu-jitsu AI feedback, combat sports AI coach, AI technique review, fight training feedback">
   <meta name="author" content="Waikru">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#f1f5f9">
@@ -13,14 +13,14 @@
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://waikru.com/">
-  <meta property="og:title" content="Waikru — AI Muay Thai Coach">
-  <meta property="og:description" content="Upload a training video. Gemini analyzes your technique and returns specific, timestamped coaching feedback in under two minutes.">
+  <meta property="og:title" content="Waikru — AI Combat Sports Coach">
+  <meta property="og:description" content="Upload a training video. AI analyzes your technique and returns specific, timestamped coaching feedback in under two minutes. Muay Thai, boxing, MMA, and jiu-jitsu.">
   <meta property="og:site_name" content="Waikru">
   <meta property="og:image" content="https://waikru.com/og-image.png">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Waikru — AI Muay Thai Coach">
-  <meta name="twitter:description" content="Upload a training video. Gemini returns specific Muay Thai coaching feedback in minutes.">
+  <meta name="twitter:title" content="Waikru — AI Combat Sports Coach">
+  <meta name="twitter:description" content="Upload a training video. Get specific AI coaching feedback on your Muay Thai, boxing, MMA, or jiu-jitsu technique in minutes. Free to start.">
   <meta name="twitter:image" content="https://waikru.com/og-image.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -383,6 +383,40 @@
     }
     .warning-banner strong { display: inline-block; margin-right: 6px; }
     {% endif %}
+
+    /* === Discipline selector === */
+    .discipline-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .disc-btn {
+      padding: 10px 22px;
+      min-height: 44px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-white);
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .disc-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .disc-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
     .upload-card {
       max-width: 900px;
@@ -1116,8 +1150,8 @@
 <section class="hero-section" aria-labelledby="hero-title">
   <div class="container">
     <div class="hero">
-      <h1 id="hero-title">Upload your training video<br>to Waikru.</h1>
-      <p class="lede">Specific, timestamped technique corrections. Free to try — no account needed.</p>
+      <h1 id="hero-title">Train smarter.<br>Fight better.</h1>
+      <p class="lede">Upload a training clip and get specific AI coaching feedback on your technique. Muay Thai, boxing, MMA, or jiu-jitsu. Free to start — no account needed.</p>
     </div>
 
     {% if not api_configured %}
@@ -1126,6 +1160,21 @@
       Set the env var before running: <code>export GEMINI_API_KEY=your_key</code>
     </div>
     {% endif %}
+
+    <div class="discipline-selector" id="disciplineSelector">
+      <button class="disc-btn selected" onclick="selectDiscipline('muay_thai', this)">
+        <span>🥊</span> Muay Thai
+      </button>
+      <button class="disc-btn" onclick="selectDiscipline('boxing', this)">
+        <span>🥊</span> Boxing
+      </button>
+      <button class="disc-btn" onclick="selectDiscipline('mma', this)">
+        <span>🤼</span> MMA
+      </button>
+      <button class="disc-btn" onclick="selectDiscipline('bjj', this)">
+        <span>🥋</span> Jiu-Jitsu
+      </button>
+    </div>
 
     <div class="upload-card">
       <div class="upload-zone" id="uploadZone">
@@ -1172,7 +1221,7 @@
 
 <!-- FEATURE ROW 1 -->
 <section class="section" aria-label="What Waikru does">
-  <h2 class="sr-only">Free AI Muay Thai video analysis</h2>
+  <h2 class="sr-only">Free AI combat sports video analysis</h2>
   <div class="container">
     <div class="feature-grid">
       <div class="feature-card">
@@ -1226,7 +1275,7 @@
 
 <!-- FEATURE ROW 2 -->
 <section class="section" aria-label="How the feedback works">
-  <h2 class="sr-only">Timestamped Muay Thai technique corrections</h2>
+  <h2 class="sr-only">Timestamped technique corrections for combat sports</h2>
   <div class="container">
     <div class="feature-grid">
       <div class="feature-card">
@@ -1277,8 +1326,8 @@
           </svg>
         </div>
         <div class="feature-text">
-          <h3>Pad work, bag work, shadow boxing</h3>
-          <p>Upload whatever you're drilling. Waikru handles solo work, partner pad rounds, and bag rounds — adjusting what it looks for to match.</p>
+          <h3>Whatever you're drilling</h3>
+          <p>Pad work, bag rounds, shadow boxing, drilling, live rolling — upload what you have. Waikru adjusts what it looks for based on your discipline and what's happening in the clip.</p>
         </div>
       </div>
     </div>
@@ -1288,7 +1337,7 @@
 <!-- GO BEYOND / HOW IT WORKS -->
 <section class="beyond-section" id="howItWorks" aria-labelledby="beyond-title">
   <div class="container">
-    <h2 class="beyond-title" id="beyond-title">How to get AI Muay Thai coaching feedback in four steps.</h2>
+    <h2 class="beyond-title" id="beyond-title">How to get AI coaching feedback on your training in four steps.</h2>
     <div class="steps">
       <div class="step-item">
         <div class="step-icon">
@@ -1341,7 +1390,7 @@
     <div class="faq-wrap">
       <div class="faq-side">
         <h2 id="faq-title">Frequently asked questions about Waikru.</h2>
-        <p>How Waikru handles your training video, what AI coaching feedback to expect, and what makes a good Muay Thai clip to upload.</p>
+        <p>How Waikru handles your training video, what AI coaching feedback to expect, and what makes a good clip to upload for Muay Thai, boxing, MMA, or jiu-jitsu.</p>
       </div>
       <div class="faq-list">
         <details class="faq-item">
@@ -1349,7 +1398,7 @@
             What kind of video should I upload to Waikru?
             <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
           </summary>
-          <div class="faq-answer">A 1–3 minute clip of pad work, bag work, or shadow boxing works best. Film from the side with your whole body in frame; good lighting helps the AI see your technique.</div>
+          <div class="faq-answer">A 1–3 minute clip of pad work, bag work, shadow boxing, drilling, or rolling works best. Film from the side with your whole body in frame — for ground grappling, a slightly elevated angle helps. Good lighting makes a real difference in what the AI can pick up.</div>
         </details>
         <details class="faq-item">
           <summary>
@@ -1377,14 +1426,14 @@
             How accurate is the AI Muay Thai feedback?
             <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
           </summary>
-          <div class="faq-answer">Our AI reliably catches stance, hand position, and obvious mechanical issues. Treat it as a second pair of eyes between sessions — not a replacement for a qualified coach.</div>
+          <div class="faq-answer">The AI reliably catches stance, hand position, and obvious mechanical issues across Muay Thai, boxing, MMA, and jiu-jitsu. Ground grappling is harder to read from phone angles than stand-up work — the AI will tell you when camera angle limits what it can assess. Treat it as a second pair of eyes between sessions, not a replacement for a qualified coach.</div>
         </details>
         <details class="faq-item">
           <summary>
             Can I upload someone else's Muay Thai training video?
             <svg class="faq-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
           </summary>
-          <div class="faq-answer">Only with their permission. Do not upload videos of minors without guardian consent or content you do not have the rights to share.</div>
+          <div class="faq-answer">Only with their permission. Do not upload videos of minors without guardian consent or content you do not have the rights to share. This applies to all disciplines — Muay Thai, boxing, MMA, and jiu-jitsu.</div>
         </details>
       </div>
     </div>
@@ -1440,9 +1489,9 @@
   <div class="container">
     <div class="faq-wrap" style="display:block;max-width:680px;margin:0 auto;">
       <h2 id="about-title" style="font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-0.5px;color:var(--text-strong);margin-bottom:20px;">About Waikru</h2>
-      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:16px;">Waikru is an AI coaching tool built for Muay Thai practitioners who want honest, specific technique feedback between sessions. Upload a clip of your pad work, bag work, or shadow boxing and get a detailed report back in under two minutes.</p>
-      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:16px;">Waikru watches your full video and returns timestamped corrections — not generic advice. Think of it as a second pair of eyes when your coach isn't in the room.</p>
-      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;">Built in Lehigh Valley, PA. Currently in test build — feedback welcome.</p>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:16px;">Waikru is an AI coaching tool for combat sports fighters who want honest, specific technique feedback between sessions. Upload a clip of your Muay Thai, boxing, MMA, or jiu-jitsu training and get a detailed coaching report back in under two minutes.</p>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:16px;">Waikru watches your full video and returns specific corrections — not generic advice pulled from a template. Think of it as a second pair of eyes when your coach isn't in the room.</p>
+      <p style="color:var(--text-muted);font-size:16px;line-height:1.7;">Built in Lehigh Valley, PA. Currently in active development — feedback welcome at <a href="mailto:hello@waikru.app" style="color:var(--accent);text-decoration:none;">hello@waikru.app</a>.</p>
     </div>
   </div>
 </section>
@@ -1640,6 +1689,14 @@
     if (e.target === this) closeTerms();
   });
 
+  let selectedDiscipline = 'muay_thai';
+
+  function selectDiscipline(discipline, btn) {
+    selectedDiscipline = discipline;
+    document.querySelectorAll('.disc-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
   const videoInput = document.getElementById('videoInput');
   const uploadZone = document.getElementById('uploadZone');
   const fileSelected = document.getElementById('fileSelected');
@@ -1747,6 +1804,7 @@
 
     const formData = new FormData();
     formData.append('video', file);
+    formData.append('discipline', selectedDiscipline);
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/upload');
