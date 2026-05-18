@@ -418,6 +418,9 @@
   <div class="nav-inner">
     <a href="/" class="logo">wai<span>kru</span></a>
     <div class="nav-right">
+      {% if user_email %}
+      <a href="/dashboard" style="font-size:14px;font-weight:500;color:var(--text-muted);text-decoration:none;padding:0 4px;" onmouseover="this.style.color='var(--text-strong)'" onmouseout="this.style.color='var(--text-muted)'">Dashboard</a>
+      {% endif %}
       <a href="/" class="btn-pill">New Analysis</a>
     </div>
   </div>

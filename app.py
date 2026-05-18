@@ -469,7 +469,7 @@ def results(job_id):
     job = jobs.get(job_id)
     if not job:
         return "Job not found", 404
-    return render_template('results.html', job_id=job_id)
+    return render_template('results.html', job_id=job_id, user_email=session.get('user_email'))
 
 
 @app.route('/create-checkout-session', methods=['POST'])
