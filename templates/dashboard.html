@@ -329,6 +329,24 @@
     <a href="/" class="btn-pill">New analysis</a>
   </div>
 
+  <div class="section-title">Subscription</div>
+  <div class="sub-card" style="margin-bottom:32px;">
+    <div class="sub-card-text">
+      {% if subscription %}
+      <h3>{{ subscription.plan | capitalize }} plan</h3>
+      <p>Active subscription. Manage billing, update payment method, or cancel anytime.</p>
+      {% else %}
+      <h3>Free plan</h3>
+      <p>1 analysis per day. Upgrade for more uploads, saved reports, and priority processing.</p>
+      {% endif %}
+    </div>
+    {% if subscription %}
+    <a href="/portal" class="btn-manage">Manage subscription</a>
+    {% else %}
+    <a href="/upgrade" class="btn-manage" style="background:var(--accent);color:#fff;border-color:var(--accent);">Upgrade</a>
+    {% endif %}
+  </div>
+
   <div class="section-title">Your coaching reports</div>
 
   {% if analyses %}
@@ -364,23 +382,6 @@
   </div>
   {% endif %}
 
-  <div class="section-title">Subscription</div>
-  <div class="sub-card">
-    <div class="sub-card-text">
-      {% if subscription %}
-      <h3>{{ subscription.plan | capitalize }} plan</h3>
-      <p>Active subscription. Manage billing, update payment method, or cancel anytime.</p>
-      {% else %}
-      <h3>Free plan</h3>
-      <p>1 analysis per day. Upgrade to Starter or Pro for more uploads and saved reports.</p>
-      {% endif %}
-    </div>
-    {% if subscription %}
-    <a href="/portal" class="btn-manage">Manage subscription</a>
-    {% else %}
-    <a href="/#pricingSection" class="btn-manage">View pricing</a>
-    {% endif %}
-  </div>
 
 </div>
 
